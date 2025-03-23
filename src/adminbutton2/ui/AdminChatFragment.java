@@ -5,6 +5,7 @@ import arc.scene.Group;
 import arc.util.Log;
 import mindustry.ui.fragments.ChatFragment;
 
+import adminbutton2.AdminVars;
 import adminbutton2.Secret;
 
 public class AdminChatFragment extends ChatFragment {
@@ -66,8 +67,13 @@ public class AdminChatFragment extends ChatFragment {
 
     @Override
     public void addMessage(String message) {
-        chatfrag.addMessage(message);
+        addMessageFinal(message);
         String secret = Secret.readSecretMessage(message);
-        if (!secret.isEmpty()) chatfrag.addMessage("[Admin button]: " + secret);
+        if (!secret.isEmpty()) addMessageFinal("[Admin button]: " + secret);
+    }
+
+    private void addMessageFinal(String message) {
+        AdminVars.messages.addMessage(message);
+        chatfrag.addMessage(message);
     }
 }

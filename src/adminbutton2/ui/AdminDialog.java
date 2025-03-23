@@ -32,6 +32,8 @@ public class AdminDialog extends BaseDialog {
                 t2.button("Send secret message", () -> sendMessage(Secret.generateSecretMessage(secretMessage))).width(200).height(50);
                 t2.button("Send random message", () -> sendMessage(Secret.generateRandomMessage(Vars.maxTextLength - messagePrefix.length()))).width(200).height(50);
             }).marginTop(8);
+            t.row();
+            t.button("Message list", () -> adminbutton2.AdminVars.messages.show()).width(200).height(50).left();
         });
     }
 
