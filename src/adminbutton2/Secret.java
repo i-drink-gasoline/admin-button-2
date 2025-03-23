@@ -61,7 +61,7 @@ public class Secret {
                 expectIcon = false;
                 expectOpen = true;
             } else {
-                if (expectOpen && (sb.length() > best.length())) best = sb.toString();
+                if ((expectOpen || expectNumber) && (sb.length() > best.length())) best = sb.toString();
                 sb.delete(0, sb.length());
                 expectOpen = true;
                 expectNumber = false;
@@ -71,7 +71,7 @@ public class Secret {
                 bases = 0;
             }
         }
-        if (expectOpen && (sb.length() > best.length())) best = sb.toString();
+        if ((expectOpen || expectNumber) && (sb.length() > best.length())) best = sb.toString();
         if (best.isEmpty()) return best;
         byte[] data;
         try {
