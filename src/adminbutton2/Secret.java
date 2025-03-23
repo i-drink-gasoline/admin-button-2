@@ -11,7 +11,7 @@ import java.util.zip.Inflater;
 import adminbutton2.BaseColor;
 
 public class Secret {
-    public static String generateSecretMessage(String message) {
+    public static String generateSecretMessage(char icon, String message) {
         Deflater deflater = new Deflater(Deflater.BEST_COMPRESSION);
         deflater.setInput(message.getBytes(StandardCharsets.UTF_8));
         deflater.finish();
@@ -22,10 +22,10 @@ public class Secret {
         deflater.end();
         StringBuilder sb = new StringBuilder("[#");
         for (char c : BaseColor.encode(compressed).toCharArray()) {
-            if (sb.length() % 10 == 8) sb.append("]" + Iconc.admin + "[#");
+            if (sb.length() % 10 == 8) sb.append("]" + icon + "[#");
             sb.append(c);
         }
-        sb.append("]" + Iconc.admin);
+        sb.append("]" + icon);
         return sb.toString();
     }
 
@@ -57,7 +57,7 @@ public class Secret {
                 expectClose = false;
                 expectBase = false;
                 expectIcon = true;
-            } else if (expectIcon && Iconc.admin == c) {
+            } else if (expectIcon && Iconc.all.indexOf(c) != -1) {
                 expectIcon = false;
                 expectOpen = true;
             } else {
@@ -92,7 +92,7 @@ public class Secret {
     }
 
     public static final String colchars = "01234567890abcdef";
-    public static String generateRandomMessage(int maxLength) {
+    public static String generateRandomMessage(char icon, int maxLength) {
         if (maxLength < 10) return "";
         StringBuilder sb = new StringBuilder();
         for (int i = Mathf.random(1, maxLength / 10); i > 0; i--) {
@@ -100,7 +100,7 @@ public class Secret {
             for (int j = 0; j < 6; j++) {
                 sb.append(colchars.charAt(Mathf.random(0, 15)));
             }
-            sb.append("]" + Iconc.admin);
+            sb.append("]" + icon);
         }
         return sb.toString();
     }
