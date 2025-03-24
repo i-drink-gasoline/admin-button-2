@@ -7,5 +7,6 @@
     "version": 0.1,
     "minGameVersion": 146,
     "java": true,
-    "hidden": true
+    "hidden": true,
+    "repo": "i-drink-gasoline/admin-button-2"
 }
