@@ -13,6 +13,9 @@ import adminbutton2.ui.AdminChatFragment;
 
 public class AdminButton extends Mod {
     public AdminButton() {
+        Events.run(EventType.ContentInitEvent.class, () -> {
+            AdminVars.loadLanguage();
+        });
         Events.run(EventType.ClientLoadEvent.class, () -> {
             AdminVars.init();
             Vars.ui.hudGroup.fill(t -> {
