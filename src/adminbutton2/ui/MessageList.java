@@ -10,7 +10,7 @@ import mindustry.ui.dialogs.BaseDialog;
 public class MessageList extends BaseDialog {
     private Table messageTable;
     public MessageList() {
-        super("Message List");
+        super("@adminbutton2.message_list.title");
         addCloseButton();
         messageTable = new Table();
         ScrollPane pane = new ScrollPane(messageTable);
