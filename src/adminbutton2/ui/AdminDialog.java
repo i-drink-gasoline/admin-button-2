@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 package adminbutton2.ui;
 
+import arc.Core;
 import arc.scene.ui.TextButton;
 import arc.scene.ui.TextField;
 import arc.scene.ui.layout.Table;
@@ -13,7 +14,7 @@ import adminbutton2.Secret;
 
 public class AdminDialog extends BaseDialog {
     private String secretMessage = "";
-    private char icon = Iconc.admin;
+    private char icon = Core.settings.getString("adminbutton2-icon", String.valueOf(Iconc.admin)).charAt(0);
     private TextButton chooserButton = new TextButton(String.valueOf(icon));
     TextField formatField = new TextField();
 
@@ -59,6 +60,7 @@ public class AdminDialog extends BaseDialog {
                 String sc = String.valueOf(c);
                 t.button(sc, () -> {
                     icon = c;
+                    Core.settings.put("adminbutton2-icon", sc);
                     chooserButton.setText(sc);
                     iconChooser.hide();
                 }).size(50);
