@@ -2,14 +2,17 @@
 package adminbutton2;
 
 import arc.Core;
+import arc.scene.Element;
 import arc.scene.ui.ButtonGroup;
 import arc.scene.ui.ScrollPane;
 import arc.scene.ui.TextButton;
 import arc.scene.ui.layout.Table;
 import arc.struct.ObjectMap;
 import arc.util.Log;
+import arc.util.Timer;
 import mindustry.Vars;
 import mindustry.ctype.UnlockableContent;
+import mindustry.gen.Icon;
 import mindustry.gen.Iconc;
 import mindustry.ui.Styles;
 
@@ -26,6 +29,17 @@ public class AdminVars {
         admin = new AdminDialog();
         messages = new MessageList();
         addLanguageOption();
+        if (Vars.mobile) Timer.schedule(() -> addPauseBuildingButton(), 4);
+    }
+
+    private static void addPauseBuildingButton() {
+        Table table = (Table) Vars.control.input.uiGroup.getChildren().get(0);
+        Element cancel = table.getChildren().get(0);
+        table.removeChild(cancel);
+        table.row();
+        table.button("@adminbutton2.pause_building", Icon.pause, Styles.togglet, () -> Vars.control.input.isBuilding = !Vars.control.input.isBuilding).width(155f).height(50f).margin(12f).checked(!Vars.control.input.isBuilding);
+        table.row();
+        table.add(cancel).width(155f).height(50f).margin(12f);
     }
 
     @SuppressWarnings("unchecked")
