@@ -2,10 +2,12 @@
 package adminbutton2.ui;
 
 import arc.Core;
+import arc.Events;
 import arc.scene.ui.TextButton;
 import arc.scene.ui.TextField;
 import arc.scene.ui.layout.Table;
 import mindustry.Vars;
+import mindustry.game.EventType;
 import mindustry.gen.Call;
 import mindustry.gen.Iconc;
 import mindustry.ui.dialogs.BaseDialog;
@@ -36,7 +38,11 @@ public class AdminDialog extends BaseDialog {
                 t2.button("@adminbutton2.admindialog.send_random_message", () -> sendMessage(Secret.generateRandomMessage(icon, Vars.maxTextLength - formatField.getText().length()))).width(200).height(50);
             }).marginTop(8);
             t.row();
-            t.button("@adminbutton2.message_list.title", () -> adminbutton2.AdminVars.messages.show()).width(200).height(50).left();
+            t.table(t2 -> {
+                t2.button("@adminbutton2.message_list.title", () -> adminbutton2.AdminVars.messages.show()).width(200).height(50);
+                TextButton waves = t2.button("@rules.waves", () -> adminbutton2.AdminVars.waves.show()).width(200).height(50).left().get();
+                Events.run(EventType.WorldLoadEvent.class, () -> waves.setDisabled(!Vars.state.rules.waves));
+            });
         });
     }
 

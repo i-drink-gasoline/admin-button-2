@@ -18,16 +18,19 @@ import mindustry.ui.Styles;
 
 import adminbutton2.ui.AdminDialog;
 import adminbutton2.ui.MessageList;
+import adminbutton2.ui.WavesDialog;
 
 public class AdminVars {
     private static final String admin_locale = "admin-button-2";
 
     public static AdminDialog admin;
     public static MessageList messages;
+    public static WavesDialog waves;
 
     public static void init() {
         admin = new AdminDialog();
         messages = new MessageList();
+        waves = new WavesDialog();
         addLanguageOption();
         if (Vars.mobile) Timer.schedule(() -> addPauseBuildingButton(), 4);
     }
