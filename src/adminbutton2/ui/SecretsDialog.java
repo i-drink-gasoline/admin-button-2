@@ -31,8 +31,9 @@ public class SecretsDialog extends BaseDialog {
             t.add(secretField).width(400).height(50).get().setMessageText("@adminbutton2.admindialog.secret_message");
             t.row();
             t.table(t2 -> {
-                t2.button("@adminbutton2.admindialog.send_secret_message", () -> sendMessage(Secret.generateSecretMessage(icon, secretField.getText()))).width(200).height(50);
-                t2.button("@adminbutton2.admindialog.send_random_message", () -> sendMessage(Secret.generateRandomMessage(icon, Vars.maxTextLength - formatField.getText().length()))).width(200).height(50);
+                t2.defaults().width(200).height(100);
+                t2.button("@adminbutton2.admindialog.send_secret_message", () -> sendMessage(Secret.generateSecretMessage(icon, secretField.getText())));
+                t2.button("@adminbutton2.admindialog.send_random_message", () -> sendMessage(Secret.generateRandomMessage(icon, Vars.maxTextLength - formatField.getText().length())));
             }).marginTop(8);
         });
     }
