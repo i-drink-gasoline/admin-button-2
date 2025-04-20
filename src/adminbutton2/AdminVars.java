@@ -2,6 +2,7 @@
 package adminbutton2;
 
 import arc.Core;
+import arc.Events;
 import arc.scene.Element;
 import arc.scene.ui.ButtonGroup;
 import arc.scene.ui.ScrollPane;
@@ -12,6 +13,7 @@ import arc.util.Log;
 import arc.util.Timer;
 import mindustry.Vars;
 import mindustry.ctype.UnlockableContent;
+import mindustry.game.EventType;
 import mindustry.gen.Icon;
 import mindustry.gen.Iconc;
 import mindustry.ui.Styles;
@@ -32,7 +34,7 @@ public class AdminVars {
         messages = new MessageList();
         waves = new WavesDialog();
         addLanguageOption();
-        if (Vars.mobile) Timer.schedule(() -> addPauseBuildingButton(), 4);
+        if (Vars.mobile) Events.run(EventType.ClientLoadEvent.class, () -> Timer.schedule(() -> addPauseBuildingButton(), 4));
     }
 
     private static void addPauseBuildingButton() {
