@@ -21,6 +21,7 @@ import mindustry.ui.Styles;
 import adminbutton2.ui.AdminDialog;
 import adminbutton2.ui.MessageList;
 import adminbutton2.ui.WavesDialog;
+import adminbutton2.ui.SecretsDialog;
 
 public class AdminVars {
     private static final String admin_locale = "admin-button-2";
@@ -28,11 +29,13 @@ public class AdminVars {
     public static AdminDialog admin;
     public static MessageList messages;
     public static WavesDialog waves;
+    public static SecretsDialog secrets;
 
     public static void init() {
         admin = new AdminDialog();
         messages = new MessageList();
         waves = new WavesDialog();
+        secrets = new SecretsDialog();
         addLanguageOption();
         if (Vars.mobile) Events.run(EventType.ClientLoadEvent.class, () -> Timer.schedule(() -> addPauseBuildingButton(), 4));
     }
