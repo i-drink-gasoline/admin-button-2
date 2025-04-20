@@ -12,10 +12,10 @@ import mindustry.ui.dialogs.BaseDialog;
 import adminbutton2.Secret;
 
 public class SecretsDialog extends BaseDialog {
-    private String secretMessage = "";
     private char icon = Core.settings.getString("adminbutton2-icon", String.valueOf(Iconc.admin)).charAt(0);
     private TextButton chooserButton = new TextButton(String.valueOf(icon));
     TextField formatField = new TextField();
+    TextField secretField = new TextField();
 
     public SecretsDialog() {
         super("@adminbutton2.secrets.title");
@@ -28,10 +28,10 @@ public class SecretsDialog extends BaseDialog {
                 t2.add(formatField).width(350);
             });;
             t.row();
-            t.field("", text -> secretMessage = text).width(400).height(50).get().setMessageText("@adminbutton2.admindialog.secret_message");
+            t.add(secretField).width(400).height(50).get().setMessageText("@adminbutton2.admindialog.secret_message");
             t.row();
             t.table(t2 -> {
-                t2.button("@adminbutton2.admindialog.send_secret_message", () -> sendMessage(Secret.generateSecretMessage(icon, secretMessage))).width(200).height(50);
+                t2.button("@adminbutton2.admindialog.send_secret_message", () -> sendMessage(Secret.generateSecretMessage(icon, secretField.getText()))).width(200).height(50);
                 t2.button("@adminbutton2.admindialog.send_random_message", () -> sendMessage(Secret.generateRandomMessage(icon, Vars.maxTextLength - formatField.getText().length()))).width(200).height(50);
             }).marginTop(8);
         });
