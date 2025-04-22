@@ -21,7 +21,7 @@ public class AdminButton extends Mod {
         Vars.ui.hudGroup.fill(t -> {
             t.button(Icon.admin, Styles.cleari, () -> {
                 AdminVars.admin.show();
-            }).width(40).height(40);
+            }).width(40).height(40).visible(() -> !Vars.ui.minimapfrag.shown() && Vars.ui.hudfrag.shown);
             t.top().right().marginTop(150);
         });
         Vars.ui.chatfrag = new AdminChatFragment(Vars.ui.chatfrag);
