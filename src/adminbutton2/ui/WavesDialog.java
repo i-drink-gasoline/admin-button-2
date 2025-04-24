@@ -4,6 +4,7 @@ package adminbutton2.ui;
 import arc.Core;
 import arc.Events;
 import arc.scene.ui.ScrollPane;
+import arc.scene.ui.TextField;
 import arc.scene.ui.layout.Table;
 import mindustry.Vars;
 import mindustry.content.StatusEffects;
@@ -17,6 +18,7 @@ public class WavesDialog extends BaseDialog {
     private Table wavesTable = new Table();
     private int page = 0;
     private int entriesPerPage = 50;
+    private TextField pageField = new TextField(String.valueOf(page));
     public WavesDialog() {
         super("@rules.waves");
         addCloseButton();
@@ -25,15 +27,22 @@ public class WavesDialog extends BaseDialog {
         Events.run(EventType.WorldLoadEvent.class, () -> displayWaves(page));
         Events.run(EventType.CoreChangeEvent.class, () -> displayWaves(page));
         cont.table(t -> {
-            t.button(Icon.left, () -> {
-                if (page > 0) page--;
-                displayWaves(page);
-            });
-            t.button(Icon.right, () -> {
-                page++;
-                displayWaves(page);
+            t.button(Icon.left, () -> setPage(page - 1));
+            t.button(Icon.right, () -> setPage(page + 1));
+            t.add(pageField);
+            pageField.changed(() -> {
+                try {
+                    page = Integer.parseInt(pageField.getText());
+                    setPage(page);
+                } catch (NumberFormatException e) {}
             });
         });
+    }
+
+    private void setPage(int newPage) {
+        page = newPage;
+        pageField.setText(String.valueOf(page));
+        displayWaves(page);
     }
 
     private void displayWaves(int page) {
