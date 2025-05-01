@@ -25,6 +25,7 @@ import adminbutton2.ui.AdminDialog;
 import adminbutton2.ui.ControllerDialog;
 import adminbutton2.ui.MessageList;
 import adminbutton2.ui.SecretsDialog;
+import adminbutton2.ui.SettingsDialog;
 import adminbutton2.ui.WavesDialog;
 import adminbutton2.util.OreIndexer;
 
@@ -36,6 +37,7 @@ public class AdminVars {
     public static WavesDialog waves;
     public static SecretsDialog secrets;
     public static ControllerDialog control;
+    public static SettingsDialog settings;
 
     public static Controller controller;
 
@@ -49,11 +51,12 @@ public class AdminVars {
         waves = new WavesDialog();
         secrets = new SecretsDialog();
         control = new ControllerDialog();
+        settings = new SettingsDialog();
         control.setController(control.controllers[0]);
-        Vars.control.input = Vars.mobile ? new ControllerMobileInput() : new ControllerDesktopInput();
+        if (Core.settings.getBool("adminbutton2.settings.override_input_handler", true))Vars.control.input = Vars.mobile ? new ControllerMobileInput() : new ControllerDesktopInput();
         oreIndexer = new OreIndexer();
         addLanguageOption();
-        if (Vars.mobile) Events.run(EventType.ClientLoadEvent.class, () -> Timer.schedule(() -> addPauseBuildingButton(), 4));
+        if (Vars.mobile && Core.settings.getBool("adminbutton2.settings.pause_building_button", true)) Events.run(EventType.ClientLoadEvent.class, () -> Timer.schedule(() -> addPauseBuildingButton(), 4));
     }
 
     private static void addPauseBuildingButton() {
