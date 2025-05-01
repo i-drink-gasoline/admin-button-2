@@ -19,5 +19,7 @@ public class AdminDialog extends BaseDialog {
         cont.buttonRow("@adminbutton2.message_list.title", Icon.chat, () -> AdminVars.messages.show());
         TextButton waves = cont.buttonRow("@rules.waves", Icon.waves, () -> AdminVars.waves.show()).get();
         Events.run(EventType.WorldLoadEvent.class, () -> waves.setDisabled(!Vars.state.rules.waves));
+        cont.row();
+        cont.buttonRow("@adminbutton2.controller.title", Icon.logic, () -> AdminVars.control.show());
     }
 }

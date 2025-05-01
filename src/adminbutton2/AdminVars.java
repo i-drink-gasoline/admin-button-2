@@ -18,10 +18,15 @@ import mindustry.gen.Icon;
 import mindustry.gen.Iconc;
 import mindustry.ui.Styles;
 
+import adminbutton2.controller.Controller;
+import adminbutton2.input.ControllerDesktopInput;
+import adminbutton2.input.ControllerMobileInput;
 import adminbutton2.ui.AdminDialog;
+import adminbutton2.ui.ControllerDialog;
 import adminbutton2.ui.MessageList;
-import adminbutton2.ui.WavesDialog;
 import adminbutton2.ui.SecretsDialog;
+import adminbutton2.ui.WavesDialog;
+import adminbutton2.util.OreIndexer;
 
 public class AdminVars {
     private static final String admin_locale = "admin-button-2";
@@ -30,12 +35,23 @@ public class AdminVars {
     public static MessageList messages;
     public static WavesDialog waves;
     public static SecretsDialog secrets;
+    public static ControllerDialog control;
+
+    public static Controller controller;
+
+    public static OreIndexer oreIndexer;
+
+    public static boolean controllerEnabled = false;
 
     public static void init() {
         admin = new AdminDialog();
         messages = new MessageList();
         waves = new WavesDialog();
         secrets = new SecretsDialog();
+        control = new ControllerDialog();
+        control.setController(control.controllers[0]);
+        Vars.control.input = Vars.mobile ? new ControllerMobileInput() : new ControllerDesktopInput();
+        oreIndexer = new OreIndexer();
         addLanguageOption();
         if (Vars.mobile) Events.run(EventType.ClientLoadEvent.class, () -> Timer.schedule(() -> addPauseBuildingButton(), 4));
     }
