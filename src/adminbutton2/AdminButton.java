@@ -7,7 +7,6 @@ import mindustry.mod.Mod;
 import mindustry.ui.Styles;
 
 import adminbutton2.AdminVars;
-import adminbutton2.ui.AdminChatFragment;
 
 public class AdminButton extends Mod {
     @Override
@@ -20,6 +19,5 @@ public class AdminButton extends Mod {
             }).width(40).height(40).visible(() -> !Vars.ui.minimapfrag.shown() && Vars.ui.hudfrag.shown);
             t.top().right().marginTop(150);
         });
-        Vars.ui.chatfrag = new AdminChatFragment(Vars.ui.chatfrag);
     }
 }

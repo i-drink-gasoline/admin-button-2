@@ -12,6 +12,7 @@ public class SettingsDialog extends BaseDialog {
         cont.defaults().left();
         if (Vars.mobile) check("adminbutton2.settings.pause_building_button", true, true);
         check("adminbutton2.settings.override_input_handler", true, true);
+        check("adminbutton2.settings.override_chatfrag", true, true);
     }
 
     private void check(String name, boolean def, boolean restart) {

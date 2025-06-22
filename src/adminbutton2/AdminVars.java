@@ -21,6 +21,7 @@ import mindustry.ui.Styles;
 import adminbutton2.controller.Controller;
 import adminbutton2.input.ControllerDesktopInput;
 import adminbutton2.input.ControllerMobileInput;
+import adminbutton2.ui.AdminChatFragment;
 import adminbutton2.ui.AdminDialog;
 import adminbutton2.ui.ControllerDialog;
 import adminbutton2.ui.MessageList;
@@ -54,6 +55,13 @@ public class AdminVars {
         settings = new SettingsDialog();
         control.setController(control.controllers[0]);
         if (Core.settings.getBool("adminbutton2.settings.override_input_handler", true))Vars.control.input = Vars.mobile ? new ControllerMobileInput() : new ControllerDesktopInput();
+        if (Core.settings.getBool("adminbutton2.settings.override_chatfrag", true)) {
+            AdminChatFragment cf = new AdminChatFragment();
+            Core.scene.root.addChild(cf);
+            Core.scene.root.swapActor(Vars.ui.chatfrag, cf);
+            Core.scene.root.removeChild(Vars.ui.chatfrag);
+            Vars.ui.chatfrag = cf;
+        }
         oreIndexer = new OreIndexer();
         addLanguageOption();
         if (Vars.mobile && Core.settings.getBool("adminbutton2.settings.pause_building_button", true)) Events.run(EventType.ClientLoadEvent.class, () -> Timer.schedule(() -> addPauseBuildingButton(), 4));
