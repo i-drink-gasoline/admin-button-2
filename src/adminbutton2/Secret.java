@@ -11,6 +11,7 @@ import java.util.zip.Inflater;
 import adminbutton2.BaseColor;
 
 public class Secret {
+    public static String icons = Iconc.all + "♿";
     public static String generateSecretMessage(char icon, String message) {
         Deflater deflater = new Deflater(Deflater.BEST_COMPRESSION);
         deflater.setInput(message.getBytes(StandardCharsets.UTF_8));
@@ -57,7 +58,7 @@ public class Secret {
                 expectClose = false;
                 expectBase = false;
                 expectIcon = true;
-            } else if (expectIcon && Iconc.all.indexOf(c) != -1) {
+            } else if (expectIcon && icons.indexOf(c) != -1) {
                 expectIcon = false;
                 expectOpen = true;
             } else {

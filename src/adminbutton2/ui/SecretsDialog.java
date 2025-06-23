@@ -53,7 +53,7 @@ public class SecretsDialog extends BaseDialog {
         iconChooser.addCloseButton();
         iconChooser.cont.pane(t -> {
             int icons = 0;
-            for (char c : Iconc.all.toCharArray()) {
+            for (char c : Secret.icons.toCharArray()) {
                 if (icons % 8 == 0 && icons != 0) t.row();
                 String sc = String.valueOf(c);
                 t.button(sc, () -> {
