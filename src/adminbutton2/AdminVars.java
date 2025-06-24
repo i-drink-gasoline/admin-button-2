@@ -54,7 +54,11 @@ public class AdminVars {
         control = new ControllerDialog();
         settings = new SettingsDialog();
         control.setController(control.controllers[0]);
-        if (Core.settings.getBool("adminbutton2.settings.override_input_handler", true))Vars.control.input = Vars.mobile ? new ControllerMobileInput() : new ControllerDesktopInput();
+        if (Core.settings.getBool("adminbutton2.settings.override_input_handler", true)) {
+            Vars.control.input = Vars.mobile ? new ControllerMobileInput() : new ControllerDesktopInput();
+        } else {
+            updateController();
+        }
         if (Core.settings.getBool("adminbutton2.settings.override_chatfrag", true)) {
             AdminChatFragment cf = new AdminChatFragment();
             Core.scene.root.addChild(cf);
@@ -108,5 +112,13 @@ public class AdminVars {
                 if (uc.details != null) uc.details = Secret.generateSecretMessage(Iconc.admin, uc.details);
             });
         }
+    }
+
+    private static void updateController() {
+        Events.run(EventType.Trigger.update, () -> {
+            if (AdminVars.controllerEnabled) {
+                AdminVars.controller.control();
+            }
+        });
     }
 }
