@@ -82,7 +82,7 @@ public class Secret {
         }
         Inflater inflater = new Inflater();
         inflater.setInput(data);
-        byte[] result = new byte[1024];
+        byte[] result = new byte[128];
         try {
             int length = inflater.inflate(result);
             inflater.end();
