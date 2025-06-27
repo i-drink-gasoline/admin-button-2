@@ -24,6 +24,7 @@ import adminbutton2.input.ControllerMobileInput;
 import adminbutton2.ui.AdminChatFragment;
 import adminbutton2.ui.AdminDialog;
 import adminbutton2.ui.ControllerDialog;
+import adminbutton2.ui.ImageGeneratorDialog;
 import adminbutton2.ui.MessageList;
 import adminbutton2.ui.SecretsDialog;
 import adminbutton2.ui.SettingsDialog;
@@ -39,6 +40,7 @@ public class AdminVars {
     public static SecretsDialog secrets;
     public static ControllerDialog control;
     public static SettingsDialog settings;
+    public static ImageGeneratorDialog image;
 
     public static Controller controller;
 
@@ -53,6 +55,7 @@ public class AdminVars {
         secrets = new SecretsDialog();
         control = new ControllerDialog();
         settings = new SettingsDialog();
+        image = new ImageGeneratorDialog();
         control.setController(control.controllers[0]);
         if (Core.settings.getBool("adminbutton2.settings.override_input_handler", true)) {
             Vars.control.input = Vars.mobile ? new ControllerMobileInput() : new ControllerDesktopInput();

@@ -22,5 +22,6 @@ public class AdminDialog extends BaseDialog {
         Events.run(EventType.WorldLoadEvent.class, () -> waves.setDisabled(!Vars.state.rules.waves));
         cont.row();
         cont.buttonRow("@adminbutton2.controller.title", Icon.logic, () -> AdminVars.control.show());
+        cont.buttonRow("@adminbutton2.imagegenerator.title", Icon.image, () -> AdminVars.image.show());
     }
 }
