@@ -101,7 +101,7 @@ public class AutomaticMovementController extends Controller {
                 }
             } else {
                 if (oreTile != null) {
-                    approach(oreTile, unit.type.mineRange);
+                    approach(oreTile, unit.type.mineRange - 1);
                     if (unit.within(oreTile, unit.type.mineRange)) {
                         unit.mineTile = oreTile;
                     }
