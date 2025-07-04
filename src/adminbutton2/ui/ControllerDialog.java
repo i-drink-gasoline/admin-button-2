@@ -24,7 +24,7 @@ public class ControllerDialog extends BaseDialog {
         cont.add(table);
         cont.row();
         cont.pane(controllerTable).growX();
-        table.check("@mod.enable", AdminVars.controllerEnabled, e -> AdminVars.controllerEnabled = e).row();
+        table.check("@adminbutton2.controller.enable_controller", AdminVars.controllerEnabled, e -> AdminVars.controllerEnabled = e).checked(b -> AdminVars.controllerEnabled).row();
         Table buttons = new Table();
         buttons.defaults().height(45).pad(5);
         table.add(buttons).marginTop(5);

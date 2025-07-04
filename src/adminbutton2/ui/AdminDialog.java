@@ -23,5 +23,6 @@ public class AdminDialog extends BaseDialog {
         cont.row();
         cont.buttonRow("@adminbutton2.controller.title", Icon.logic, () -> AdminVars.control.show());
         cont.buttonRow("@adminbutton2.imagegenerator.title", Icon.image, () -> AdminVars.image.show());
+        cont.buttonRow("@adminbutton2.panelconfig.title", Icon.wrench, () -> AdminVars.panelConfig.show());
     }
 }

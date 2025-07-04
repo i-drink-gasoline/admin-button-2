@@ -16,8 +16,10 @@ import mindustry.ctype.UnlockableContent;
 import mindustry.game.EventType;
 import mindustry.gen.Icon;
 import mindustry.gen.Iconc;
+import mindustry.mod.Mod;
 import mindustry.ui.Styles;
 
+import adminbutton2.AdminPanel;
 import adminbutton2.controller.Controller;
 import adminbutton2.input.ControllerDesktopInput;
 import adminbutton2.input.ControllerMobileInput;
@@ -26,13 +28,16 @@ import adminbutton2.ui.AdminDialog;
 import adminbutton2.ui.ControllerDialog;
 import adminbutton2.ui.ImageGeneratorDialog;
 import adminbutton2.ui.MessageList;
+import adminbutton2.ui.PanelConfigDialog;
 import adminbutton2.ui.SecretsDialog;
 import adminbutton2.ui.SettingsDialog;
 import adminbutton2.ui.WavesDialog;
 import adminbutton2.util.OreIndexer;
 
-public class AdminVars {
+public class AdminVars extends Mod {
     private static final String admin_locale = "admin-button-2";
+
+    public static AdminPanel panel;
 
     public static AdminDialog admin;
     public static MessageList messages;
@@ -41,6 +46,7 @@ public class AdminVars {
     public static ControllerDialog control;
     public static SettingsDialog settings;
     public static ImageGeneratorDialog image;
+    public static PanelConfigDialog panelConfig;
 
     public static Controller controller;
 
@@ -48,7 +54,9 @@ public class AdminVars {
 
     public static boolean controllerEnabled = false;
 
-    public static void init() {
+    @Override
+    public void init() {
+        panel = new AdminPanel();
         admin = new AdminDialog();
         messages = new MessageList();
         waves = new WavesDialog();
@@ -56,6 +64,7 @@ public class AdminVars {
         control = new ControllerDialog();
         settings = new SettingsDialog();
         image = new ImageGeneratorDialog();
+        panelConfig = new PanelConfigDialog();
         control.setController(control.controllers[0]);
         if (Core.settings.getBool("adminbutton2.settings.override_input_handler", true)) {
             Vars.control.input = Vars.mobile ? new ControllerMobileInput() : new ControllerDesktopInput();
@@ -71,6 +80,7 @@ public class AdminVars {
         }
         oreIndexer = new OreIndexer();
         addLanguageOption();
+        loadLanguage();
         if (Vars.mobile && Core.settings.getBool("adminbutton2.settings.pause_building_button", true)) Events.run(EventType.ClientLoadEvent.class, () -> Timer.schedule(() -> addPauseBuildingButton(), 4));
     }
 

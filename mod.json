@@ -2,7 +2,7 @@
     "displayName": "Admin Button 2",
     "name": "admin-button-2",
     "author": "I drink gasoline",
-    "main": "adminbutton2.AdminButton",
+    "main": "adminbutton2.AdminVars",
     "description": "Add an admin button.",
     "version": 0.7,
     "minGameVersion": 146,
