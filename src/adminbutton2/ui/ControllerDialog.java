@@ -11,10 +11,14 @@ import mindustry.ui.dialogs.BaseDialog;
 import adminbutton2.AdminVars;
 import adminbutton2.controller.AutomaticMovementController;
 import adminbutton2.controller.Controller;
+import adminbutton2.controller.PushPlayerController;
 
 public class ControllerDialog extends BaseDialog {
     private Table controllerTable = new Table();
-    public Controller controllers[] = {new AutomaticMovementController()};
+    public Controller controllers[] = {
+        new AutomaticMovementController(),
+        new PushPlayerController(),
+    };
 
     public ControllerDialog() {
         super("@adminbutton2.controller.title");

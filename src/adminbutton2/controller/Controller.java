@@ -49,4 +49,10 @@ public class Controller {
             unit.vel.setZero();
         }
     }
+
+    public void moveTo(Position target) {
+        unit.lookAt(target);
+        vec.set(target).sub(unit).nor().setLength(unit.type.speed);
+        unit.movePref(vec);
+    }
 }
