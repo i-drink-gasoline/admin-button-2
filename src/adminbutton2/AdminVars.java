@@ -68,9 +68,8 @@ public class AdminVars extends Mod {
         control.setController(control.controllers[0]);
         if (Core.settings.getBool("adminbutton2.settings.override_input_handler", true)) {
             Vars.control.input = Vars.mobile ? new ControllerMobileInput() : new ControllerDesktopInput();
-        } else {
-            updateController();
         }
+        updateController();
         if (Core.settings.getBool("adminbutton2.settings.override_chatfrag", true)) {
             AdminChatFragment cf = new AdminChatFragment();
             Core.scene.root.addChild(cf);
