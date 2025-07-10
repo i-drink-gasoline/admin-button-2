@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0
 package adminbutton2.controller;
 
+import arc.graphics.Color;
 import arc.math.geom.Vec2;
 import arc.scene.ui.ButtonGroup;
 import arc.scene.ui.TextButton;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
+import arc.util.Interval;
 import arc.util.Strings;
 import mindustry.Vars;
 import mindustry.gen.Groups;
@@ -19,17 +21,27 @@ public class PushPlayerController extends Controller {
     private static final int push_to_coordinates = 1, push_from_behind = 2;
     private int push = push_to_coordinates;
     private Vec2 targetPosition = new Vec2(0f, 0f);
+    private Interval reload = new Interval();
+    private Seq<Player> lastPlayers = new Seq<>();
 
     public PushPlayerController() {
         super("push_player");
     }
 
-    private void reloadPlayers() {
-        playersTable.clearChildren();
+    private void reloadPlayers(boolean now) {
         Seq<Player> players = Groups.player.copy();
-        for (Player player : players) {
-            playersTable.button(player.coloredName(), () -> targetPlayer = player).fillX().get().getLabel().setWrap(false);
-            playersTable.row();
+        if (now || !lastPlayers.equals(players)) {
+            lastPlayers = players.copy();
+            playersTable.clearChildren();
+            for (Player player : players) {
+                TextButton button = playersTable.button(player.coloredName(), () -> {
+                    targetPlayer = player;
+                    reloadPlayers(true);
+                }).fillX().get();
+                button.getLabel().setWrap(false);
+                if (targetPlayer == player) button.color.set(Color.scarlet);
+                playersTable.row();
+            }
         }
     }
 
@@ -60,12 +72,12 @@ public class PushPlayerController extends Controller {
                 .group(group).update(b -> b.setChecked(push == push_from_behind)).get().getLabel().setWrap(false);
         }).row();
         table.table(t -> {
-            t.button(Icon.refresh, () -> reloadPlayers());
             t.add("x:").padLeft(10f);
             t.field("0", a -> targetPosition.x = Strings.parseFloat(a, 0f) * (float) Vars.tilesize);
             t.add("y:");
             t.field("0", a -> targetPosition.y = Strings.parseFloat(a, 0f) * (float) Vars.tilesize).row();
         }).row();
         table.add(playersTable).marginTop(5);
+        playersTable.update(() -> {if (reload.get(30)) reloadPlayers(false);});
     }
 }
