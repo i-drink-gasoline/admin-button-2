@@ -12,6 +12,7 @@ import arc.scene.ui.ImageButton;
 import arc.scene.ui.layout.Cell;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
+import mindustry.Vars;
 import mindustry.game.EventType;
 import mindustry.gen.Icon;
 import mindustry.ui.Styles;
@@ -26,6 +27,7 @@ public class AdminPanel {
     public AdminPanel() {
         Core.scene.root.addChild(table);
         table.update(() -> table.toFront());
+        table.visible(() -> !Vars.ui.minimapfrag.shown() && Vars.ui.hudfrag.shown);
         addDefaultButtons();
         loadButtons();
         rebuild();
