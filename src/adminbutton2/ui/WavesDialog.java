@@ -50,7 +50,6 @@ public class WavesDialog extends BaseDialog {
     }
 
     private void displayWaves(int first, int last) {
-        if (!Vars.state.rules.waves) return;
         wavesTable.clearChildren();
         StringBuilder sb = new StringBuilder();
         for (int wave = first; wave <= last; wave++) {
