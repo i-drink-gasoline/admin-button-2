@@ -2,6 +2,7 @@
 package adminbutton2.input;
 
 import arc.Core;
+import arc.input.KeyCode;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
@@ -12,8 +13,18 @@ import mindustry.input.DesktopInput;
 import adminbutton2.AdminVars;
 
 public class ControllerDesktopInput extends DesktopInput {
+    private boolean panSpeedChanged = false;
+    private float panSpeedSaved, panBoostSpeedSaved;
+
     @Override
     public void update() {
+        if (Core.input.keyDown(KeyCode.altLeft)) {
+            panSpeedSaved = panSpeed;
+            panBoostSpeedSaved = panBoostSpeed;
+            panSpeed = panBoostSpeed * 2;
+            panBoostSpeed = panSpeed;
+            panSpeedChanged = true;
+        }
         if (AdminVars.controllerEnabled) {
             Tmp.v1.set(Core.camera.position);
             super.update();
@@ -25,6 +36,10 @@ public class ControllerDesktopInput extends DesktopInput {
                 Core.camera.position.set(Tmp.v1);
             }
         } else super.update();
+        if (panSpeedChanged) {
+            panSpeed = panSpeedSaved; panBoostSpeed = panBoostSpeedSaved;
+            panSpeedChanged = false;
+        }
     }
 
     @Override
