@@ -3,6 +3,7 @@ package adminbutton2.input;
 
 import arc.Core;
 import arc.input.KeyCode;
+import arc.math.geom.Vec2;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
@@ -15,6 +16,7 @@ import adminbutton2.AdminVars;
 public class ControllerDesktopInput extends DesktopInput {
     private boolean panSpeedChanged = false;
     private float panSpeedSaved, panBoostSpeedSaved;
+    private Vec2 cam = new Vec2();
 
     @Override
     public void update() {
@@ -26,14 +28,14 @@ public class ControllerDesktopInput extends DesktopInput {
             panSpeedChanged = true;
         }
         if (AdminVars.controllerEnabled) {
-            Tmp.v1.set(Core.camera.position);
+            cam.set(Core.camera.position);
             super.update();
-            if (!panning && !Vars.player.dead()) {
+            if (!panning) {
                 if (!Core.scene.hasField()) {
                     float speed = (!Core.input.keyDown(Binding.boost) ? panSpeed : panBoostSpeed) * Time.delta;
-                    Tmp.v1.add(Tmp.v2.set(Core.input.axis(Binding.move_x), Core.input.axis(Binding.move_y)).nor().scl(speed));
+                    cam.add(Tmp.v1.set(Core.input.axis(Binding.move_x), Core.input.axis(Binding.move_y)).nor().scl(speed));
                 }
-                Core.camera.position.set(Tmp.v1);
+                Core.camera.position.set(cam);
             }
         } else super.update();
         if (panSpeedChanged) {
