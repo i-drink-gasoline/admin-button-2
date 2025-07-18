@@ -69,7 +69,7 @@ public class AdminPanel {
 
     public void rebuild() {
         table.clearChildren();
-        table.defaults().width(40).height(40);
+        table.defaults().size(Core.settings.getFloat("adminbutton2.adminpanel.button_size", 40));
         activeButtons.each(b -> {
             if (b.row) {
                 table.row();

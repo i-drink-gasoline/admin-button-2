@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0
 package adminbutton2.ui;
 
+import arc.Core;
+import arc.scene.ui.Label;
 import arc.scene.ui.layout.Table;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
@@ -20,6 +22,15 @@ public class PanelConfigDialog extends BaseDialog {
 
     private void rebuild() {
         table.clearChildren();
+        table.table(t -> {
+            float buttonSize = Core.settings.getFloat("adminbutton2.adminpanel.button_size", 40);
+            Label field = t.add(String.format("%.0f", buttonSize)).get();
+            t.slider(40, 80, 10, buttonSize, true, size -> {
+                Core.settings.put("adminbutton2.adminpanel.button_size", size);
+                buttonsUpdated();
+                field.setText(String.format("%.0f", size));
+            }).padLeft(8f);
+        }).row();
         AdminVars.panel.activeButtons.each(a -> {
             table.table(Tex.button, t -> {
                 t.left();
