@@ -32,6 +32,7 @@ import adminbutton2.ui.PanelConfigDialog;
 import adminbutton2.ui.SecretsDialog;
 import adminbutton2.ui.SettingsDialog;
 import adminbutton2.ui.WavesDialog;
+import adminbutton2.util.Commands;
 import adminbutton2.util.OreIndexer;
 
 public class AdminVars extends Mod {
@@ -51,6 +52,7 @@ public class AdminVars extends Mod {
     public static Controller controller;
 
     public static OreIndexer oreIndexer;
+    public static Commands commands;
 
     public static boolean controllerEnabled = false;
 
@@ -78,6 +80,7 @@ public class AdminVars extends Mod {
             Vars.ui.chatfrag = cf;
         }
         oreIndexer = new OreIndexer();
+        commands = new Commands();
         addLanguageOption();
         loadLanguage();
         if (Vars.mobile && Core.settings.getBool("adminbutton2.settings.pause_building_button", true)) Events.run(EventType.ClientLoadEvent.class, () -> Timer.schedule(() -> addPauseBuildingButton(), 4));
