@@ -51,8 +51,12 @@ public class AdminPanel {
         addButton("@adminbutton2.secrets.title", Icon.admin, () -> AdminVars.secrets.show());
         addButton("@rules.waves", Icon.waves, () -> AdminVars.waves.show());
         addButton("@adminbutton2.panelconfig.title", Icon.wrench, () -> AdminVars.panelConfig.show());
+        addButton("@adminbutton2.autofill_config.title", Icon.box, () -> AdminVars.autofillConfig.show());
 
         addButton("@adminbutton2.controller.enable_controller", Icon.logic, () -> AdminVars.controllerEnabled = !AdminVars.controllerEnabled, b -> AdminVars.controllerEnabled);
+        addButton("@adminbutton2.autofill.enabled", Icon.box, () -> AdminVars.autofill.enabled = !AdminVars.autofill.enabled, b -> AdminVars.autofill.enabled);
+        addButton("@adminbutton2.autofill.select_buildings", Icon.download, () -> AdminVars.autofill.selectBuildings = !AdminVars.autofill.selectBuildings, b -> AdminVars.autofill.selectBuildings);
+        addButton("@adminbutton2.autofill.fill_only_selected_buildings", Icon.commandRally, () -> AdminVars.autofill.fillOnlySelectedBuildings = !AdminVars.autofill.fillOnlySelectedBuildings, b -> AdminVars.autofill.fillOnlySelectedBuildings);
     }
 
     private void setTablePosition() {
