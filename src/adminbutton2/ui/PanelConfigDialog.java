@@ -8,6 +8,7 @@ import mindustry.gen.Icon;
 import mindustry.gen.Tex;
 import mindustry.ui.dialogs.BaseDialog;
 
+import adminbutton2.AdminPanel;
 import adminbutton2.AdminVars;
 
 public class PanelConfigDialog extends BaseDialog {
@@ -31,31 +32,31 @@ public class PanelConfigDialog extends BaseDialog {
                 field.setText(String.format("%.0f", size));
             }).padLeft(8f);
         }).row();
-        AdminVars.panel.activeButtons.each(a -> {
+        for (int i = 0; i < AdminVars.panel.activeButtons.size; i++) {
+            AdminPanel.PanelButton button = AdminVars.panel.activeButtons.get(i);
+            int index = i;
             table.table(Tex.button, t -> {
                 t.left();
                 t.button(Icon.up, () -> {
-                    int index = AdminVars.panel.activeButtons.indexOf(a);
                     if (index - 1 < 0) return;
                     AdminVars.panel.activeButtons.swap(index, index - 1);
                     buttonsUpdated();
                 });
                 t.button(Icon.down, () -> {
-                    int index = AdminVars.panel.activeButtons.indexOf(a);
                     if (index + 1 >= AdminVars.panel.activeButtons.size) return;
                     AdminVars.panel.activeButtons.swap(index, index + 1);
                     buttonsUpdated();
                 });
-                t.add(a.name).padLeft(10f);
+                t.add(button.name).padLeft(10f);
             }).fillX();
-            if (!a.mandatory) {
+            if (!button.mandatory) {
                 table.button(Icon.cancel, () -> {
-                    AdminVars.panel.activeButtons.remove(a);
+                    AdminVars.panel.activeButtons.remove(index);
                     buttonsUpdated();
                 }).padLeft(10f);
             }
             table.row();
-        });
+        };
     }
 
     private void addButton() {
