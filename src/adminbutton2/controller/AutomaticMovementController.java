@@ -10,8 +10,8 @@ import arc.util.Interval;
 import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.gen.Call;
+import mindustry.gen.Unit;
 import mindustry.type.Item;
-import mindustry.type.UnitType;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
 import mindustry.world.Tile;
@@ -25,7 +25,7 @@ public class AutomaticMovementController extends Controller {
     private int dropInterval = 0, findInterval = 1;
     private Tile oreTile;
     private Item targetItem;
-    private UnitType previousUnit;
+    private Unit previousUnit;
     private boolean mine = true;
     private Table mineButtons;
     private int buttons = 0;
@@ -72,8 +72,8 @@ public class AutomaticMovementController extends Controller {
         if (!unit.plans.isEmpty() && Vars.control.input.isBuilding) {
             approach(unit.plans.first(), unit.type.buildRange / 1.5f);
         } else if (unit.canMine() && mine) {
-            if (unit.type != previousUnit) {
-                previousUnit = unit.type;
+            if (unit != previousUnit) {
+                previousUnit = unit;
                 reloadDrillables();
                 interval.getTimes()[findInterval] = 0;
             }
@@ -88,24 +88,24 @@ public class AutomaticMovementController extends Controller {
                 if (sameDrop > 1) targetBlock = drillables.min(i -> i.itemDrop == targetItem, i -> AdminVars.oreIndexer.findClosestOreDistance(unit.x / Vars.tilesize, unit.y / Vars.tilesize, i.id));
                 oreTile = AdminVars.oreIndexer.findClosestOre(unit.x / Vars.tilesize, unit.y / Vars.tilesize, targetBlock.id);
             }
-            if (targetItem == null) return;
-            if ((unit.stack.item != targetItem || unit.stack.amount >= unit.type.itemCapacity) && unit.stack.amount > 0) {
-                approach(core, unit.type.range / 2);
-                if (unit.within(core, unit.type.range / 2)) {
-                    if (!interval.get(dropInterval, 60)) return;
+            if (targetItem == null ||  oreTile == null) return;
+            here: if ((unit.stack.item != targetItem || unit.stack.amount >= unit.type.itemCapacity) && unit.stack.amount > 0) {
+                if (!unit.within(core, Vars.itemTransferRange - 20)) {
+                    approach(core, Vars.itemTransferRange - 40);
+                } else {
+                    if (unit.stack.item != targetItem && oreTile.within(core, Vars.itemTransferRange + unit.type.mineRange - 10)) break here;
                     if (core.acceptStack(unit.stack.item, unit.stack.amount, unit) > 0) {
+                        if (!interval.get(dropInterval, 60)) return;
                         Call.transferInventory(Vars.player, core);
                     } else {
                         Call.dropItem(0);
                     }
                 }
-            } else {
-                if (oreTile != null) {
-                    approach(oreTile, unit.type.mineRange - 1);
-                    if (unit.within(oreTile, unit.type.mineRange)) {
-                        unit.mineTile = oreTile;
-                    }
-                }
+                return;
+            }
+            approach(oreTile, unit.type.mineRange - 1);
+            if (unit.within(oreTile, unit.type.mineRange)) {
+                unit.mineTile = oreTile;
             }
         }
     }
