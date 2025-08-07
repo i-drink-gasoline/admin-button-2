@@ -220,6 +220,7 @@ public class AutoFill {
                 if (isBiggestFillInUnit && thisItem != item) continue;
                 if ((thisFill > biggestFill)) {
                     item = thisItem;
+                    biggestFill = thisFill;
                     building = b;
                 }
             }
