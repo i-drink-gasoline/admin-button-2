@@ -16,8 +16,10 @@ import mindustry.ctype.UnlockableContent;
 import mindustry.game.EventType;
 import mindustry.gen.Icon;
 import mindustry.gen.Iconc;
+import mindustry.graphics.Pal;
 import mindustry.mod.Mod;
 import mindustry.ui.Styles;
+import mindustry.ui.dialogs.SettingsMenuDialog;
 
 import adminbutton2.AdminPanel;
 import adminbutton2.controller.Controller;
@@ -31,7 +33,6 @@ import adminbutton2.ui.ImageGeneratorDialog;
 import adminbutton2.ui.MessageList;
 import adminbutton2.ui.PanelConfigDialog;
 import adminbutton2.ui.SecretsDialog;
-import adminbutton2.ui.SettingsDialog;
 import adminbutton2.ui.WavesDialog;
 import adminbutton2.util.AutoFill;
 import adminbutton2.util.Commands;
@@ -47,7 +48,6 @@ public class AdminVars extends Mod {
     public static WavesDialog waves;
     public static SecretsDialog secrets;
     public static ControllerDialog control;
-    public static SettingsDialog settings;
     public static ImageGeneratorDialog image;
     public static PanelConfigDialog panelConfig;
     public static AutoFillConfigDialog autofillConfig;
@@ -68,7 +68,6 @@ public class AdminVars extends Mod {
         waves = new WavesDialog();
         secrets = new SecretsDialog();
         control = new ControllerDialog();
-        settings = new SettingsDialog();
         image = new ImageGeneratorDialog();
         panelConfig = new PanelConfigDialog();
         autofillConfig = new AutoFillConfigDialog();
@@ -90,6 +89,7 @@ public class AdminVars extends Mod {
         addLanguageOption();
         loadLanguage();
         if (Vars.mobile && Core.settings.getBool("adminbutton2.settings.pause_building_button", true)) Events.run(EventType.ClientLoadEvent.class, () -> Timer.schedule(() -> addPauseBuildingButton(), 4));
+        addSettingsCategory();
     }
 
     private static void addPauseBuildingButton() {
@@ -141,5 +141,38 @@ public class AdminVars extends Mod {
                 AdminVars.controller.control();
             }
         });
+    }
+
+    private void addSettingsCategory() {
+        Vars.ui.settings.addCategory("Admin Button 2", Icon.admin, builder -> {
+            builder.pref(new CategorySetting("Admin Button 2"));
+            builder.checkPref("adminbutton2.settings.override_input_handler", true, v -> Vars.ui.showInfo("@setting.macnotch.description"));
+            builder.checkPref("adminbutton2.settings.override_chatfrag", true, v -> Vars.ui.showInfo("@setting.macnotch.description"));
+            if (Vars.mobile) builder.checkPref("adminbutton2.settings.pause_building_button", true, v -> Vars.ui.showInfo("@setting.macnotch.description"));
+            builder.pref(new CategorySetting("AutoFill"));
+            builder.sliderPref("adminbutton2.autofill.interaction_cooldown_milliseconds", 250, 0, 5000, 25, v -> {
+                AdminVars.autofill.interactionCooldown = (float)v / 1000;
+                return Core.bundle.format("setting.milliseconds", v);
+            });
+            builder.sliderPref("adminbutton2.autofill.core_minimum_request_amount", 30, 1, 500, 1, v -> {
+                AdminVars.autofill.coreMinimumRequestAmount = v;
+                return "" + v;
+            });
+        });
+    }
+
+    private class CategorySetting extends SettingsMenuDialog.SettingsTable.Setting {
+        private String text;
+
+        public CategorySetting(String text) {
+            super(null);
+            this.text = text;
+        }
+
+        @Override
+        public void add(SettingsMenuDialog.SettingsTable table) {
+            table.add(text).color(Pal.accent).row();
+            table.image().color(Pal.accent).height(3f).growX().padBottom(8f).row();
+        }
     }
 }

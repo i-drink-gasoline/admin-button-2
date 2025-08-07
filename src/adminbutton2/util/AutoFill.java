@@ -32,8 +32,8 @@ public class AutoFill {
     public boolean selectBuildings = false;
     public boolean enabled = false;
     public boolean fillOnlySelectedBuildings = false;
-    public int coreMinimumRequestAmount = Core.settings.getInt("adminbutton2.autofill.core_minimum_request_amount", 30);
-    public float interactionCooldown = Core.settings.getFloat("adminbutton2.autofill.interaction_cooldown", 0.25f);
+    public int coreMinimumRequestAmount;
+    public float interactionCooldown;
     Interval interval = new Interval();
     static Seq<Building> selected = new Seq<>();
     Seq<Building> validCloseBuildings = new Seq<>();

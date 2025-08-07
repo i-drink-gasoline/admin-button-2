@@ -14,7 +14,6 @@ public class AdminDialog extends BaseDialog {
     public AdminDialog() {
         super("@adminbutton2.admindialog.title");
         addCloseButton();
-        buttons.button("@settings", Icon.settings, () -> AdminVars.settings.show());
         cont.defaults().size(130).pad(5);
         cont.buttonRow("@adminbutton2.secrets.title", Icon.admin, () -> AdminVars.secrets.show());
         cont.buttonRow("@adminbutton2.message_list.title", Icon.chat, () -> AdminVars.messages.show());
