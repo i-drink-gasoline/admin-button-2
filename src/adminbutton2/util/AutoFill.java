@@ -99,7 +99,7 @@ public class AutoFill {
         unit = Vars.player.unit();
         core = unit.closestCore();
         Target target = getBestTarget(selected);
-        if (target == null && !fillOnlySelectedBuildings) {
+        if ((target == null || target.amount < 5) && !fillOnlySelectedBuildings) {
             validCloseBuildings.clear();
             Vars.indexer.eachBlock(Vars.player.unit(), Vars.itemTransferRange, b -> {
                 return validBuilding(b);
@@ -199,7 +199,6 @@ public class AutoFill {
             item = getItem(b);
         }
         if (item == null) return null;
-        if (b.acceptStack(item, Integer.MAX_VALUE, Vars.player.unit()) <= (fillOnlySelectedBuildings ? 0 : 4)) return null;
         return item;
     }
 
@@ -212,7 +211,8 @@ public class AutoFill {
             Item thisItem = getNeededItem(b);
             if (thisItem != null) {
                 int thisFill = b.acceptStack(thisItem, Integer.MAX_VALUE, Vars.player.unit());
-                if (!isBiggestFillInUnit && thisItem == unit.stack.item && unit.stack.amount > 0) {
+                here: if (!isBiggestFillInUnit && thisItem == unit.stack.item && unit.stack.amount > 0) {
+                    if (b.acceptStack(thisItem, Integer.MAX_VALUE, Vars.player.unit()) < 5) break here;
                     item = thisItem;
                     biggestFill = 0;
                     isBiggestFillInUnit = true;
@@ -225,16 +225,18 @@ public class AutoFill {
                 }
             }
         }
-        if (item == null) return null;
-        return new Target(building, item);
+        if (biggestFill < 1) return null;
+        return new Target(building, item, biggestFill);
     }
 
     private class Target {
         Building building;
         Item item;
-        Target(Building building, Item item) {
+        int amount;
+        Target(Building building, Item item, int amount) {
             this.building = building;
             this.item = item;
+            this.amount = amount;
         }
     }
 }
