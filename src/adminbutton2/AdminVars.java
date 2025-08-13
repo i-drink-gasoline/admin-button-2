@@ -62,6 +62,10 @@ public class AdminVars extends Mod {
 
     @Override
     public void init() {
+        oreIndexer = new OreIndexer();
+        commands = new Commands();
+        autofill = new AutoFill();
+
         panel = new AdminPanel();
         admin = new AdminDialog();
         messages = new MessageList();
@@ -83,9 +87,6 @@ public class AdminVars extends Mod {
             Core.scene.root.removeChild(Vars.ui.chatfrag);
             Vars.ui.chatfrag = cf;
         }
-        oreIndexer = new OreIndexer();
-        commands = new Commands();
-        autofill = new AutoFill();
         addLanguageOption();
         loadLanguage();
         if (Vars.mobile && Core.settings.getBool("adminbutton2.settings.pause_building_button", true)) Events.run(EventType.ClientLoadEvent.class, () -> Timer.schedule(() -> addPauseBuildingButton(), 4));

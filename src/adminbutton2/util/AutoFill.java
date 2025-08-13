@@ -19,6 +19,7 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Item;
 import mindustry.type.ItemStack;
+import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.consumers.Consume;
 import mindustry.world.consumers.ConsumeItemDynamic;
@@ -34,6 +35,7 @@ public class AutoFill {
     public boolean fillOnlySelectedBuildings = false;
     public int coreMinimumRequestAmount;
     public float interactionCooldown;
+    public boolean[] fillMap;
     Interval interval = new Interval();
     static Seq<Building> selected = new Seq<>();
     Seq<Building> validCloseBuildings = new Seq<>();
@@ -49,7 +51,7 @@ public class AutoFill {
                         if (selected.contains(b)) {
                             selected.remove(b);
                         } else {
-                            if (AdminVars.autofill.validBuilding(e.tile.build)) selected.add(b);
+                            if (AdminVars.autofill.shouldFillBuilding(e.tile.build)) selected.add(b);
                         }
                     }
                 }
@@ -60,9 +62,22 @@ public class AutoFill {
         Events.run(EventType.WorldLoadEvent.class, () -> selected.clear());
     }
 
-    public boolean validBuilding(Building building) {
+    public AutoFill() {
+        Seq<Block> blocks = Vars.content.blocks();
+        fillMap = new boolean[blocks.size];
+        for (int i = 0; i < blocks.size; i++) {
+            fillMap[i] = Core.settings.getBool("adminbutton2.autofill.fill." + blocks.get(i).name, true);
+        }
+    }
+
+    private boolean shouldFillBuilding(Building building) {
         if (building.team != Vars.player.team()) return false;
-        for (Consume c : building.block.consumers) {
+        if (!fillMap[building.block.id]) return false;
+        return validBlock(building.block);
+    }
+
+    public boolean validBlock(Block block) {
+        for (Consume c : block.consumers) {
             if (c instanceof ConsumeItems || c instanceof ConsumeItemDynamic || c instanceof ConsumeItemFilter) {
                 if (c instanceof ConsumeItemExplode) continue;
                 return true;
@@ -83,7 +98,7 @@ public class AutoFill {
         if (!fillOnlySelectedBuildings) {
             Draw.color(Pal.plastanium);
             Vars.indexer.eachBlock(Vars.player.unit(), Vars.itemTransferRange, b -> {
-                return validBuilding(b) && !selected.contains(b);
+                return shouldFillBuilding(b) && !selected.contains(b);
             }, b -> {
                 Lines.square(b.x, b.y, b.block.size * Vars.tilesize / 1.5f, draw_rot);
             });
@@ -102,7 +117,7 @@ public class AutoFill {
         if ((target == null || target.amount < 5) && !fillOnlySelectedBuildings) {
             validCloseBuildings.clear();
             Vars.indexer.eachBlock(Vars.player.unit(), Vars.itemTransferRange, b -> {
-                return validBuilding(b);
+                return shouldFillBuilding(b);
             }, b -> {
                 validCloseBuildings.add(b);
             });
