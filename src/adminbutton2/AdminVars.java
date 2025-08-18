@@ -36,10 +36,12 @@ import adminbutton2.ui.SecretsDialog;
 import adminbutton2.ui.WavesDialog;
 import adminbutton2.util.AutoFill;
 import adminbutton2.util.Commands;
+import adminbutton2.util.Communication;
 import adminbutton2.util.OreIndexer;
 
 public class AdminVars extends Mod {
     private static final String admin_locale = "admin-button-2";
+    public static final String chatNotificationPrefix = "[AB2] ";
 
     public static AdminPanel panel;
 
@@ -57,6 +59,7 @@ public class AdminVars extends Mod {
     public static OreIndexer oreIndexer;
     public static Commands commands;
     public static AutoFill autofill;
+    public static Communication comms;
 
     public static boolean controllerEnabled = false;
 
@@ -65,6 +68,7 @@ public class AdminVars extends Mod {
         oreIndexer = new OreIndexer();
         commands = new Commands();
         autofill = new AutoFill();
+        comms = new Communication();
 
         panel = new AdminPanel();
         admin = new AdminDialog();

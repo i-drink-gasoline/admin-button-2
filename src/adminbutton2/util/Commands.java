@@ -9,8 +9,12 @@ import mindustry.gen.Call;
 import mindustry.gen.Iconc;
 import mindustry.gen.Tex;
 import mindustry.ui.dialogs.BaseDialog;
+import mindustry.world.Tile;
+import mindustry.world.blocks.logic.MessageBlock;
 
+import adminbutton2.AdminVars;
 import adminbutton2.Secret;
+import adminbutton2.util.BaseUTF16;
 
 public class Commands {
     public CommandHandler handler = new CommandHandler(Core.settings.getString("adminbutton2.commands.prefix", "."));
@@ -61,6 +65,14 @@ public class Commands {
                 return;
             }
             Call.sendChatMessage(message);
+        });
+
+        handler.register("sm", "<message...>", "adminbutton2.command.sm.description", args -> {
+            if (AdminVars.comms.selectedBuildingExists()) {
+                AdminVars.comms.sendMessage(args[0]);
+            } else {
+                AdminVars.comms.selectBuildingAndSendMessage(args[0]);
+            }
         });
     }
 }
