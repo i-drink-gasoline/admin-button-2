@@ -10,6 +10,7 @@ import mindustry.gen.Player;
 import mindustry.world.Tile;
 import mindustry.world.blocks.logic.MessageBlock;
 
+import java.nio.charset.StandardCharsets;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
@@ -86,7 +87,7 @@ public class Communication {
         if (selectedBuilding == null) return;
         if (selectedBuilding.block instanceof MessageBlock) {
             if (!selectedBuilding.interactable(Vars.player.team()) || !((MessageBlock)selectedBuilding.block()).accessible()) return;
-            byte[] tmpData = message.getBytes();
+            byte[] tmpData = message.getBytes(StandardCharsets.UTF_8);
             byte[] data = new byte[tmpData.length + 1];
             data[0] = MessageType.ChatMessage.value;
             System.arraycopy(tmpData, 0, data, 1, tmpData.length);
@@ -117,7 +118,7 @@ public class Communication {
         byte[] data = inflate(bytes, 256);
         if (data == null) return;
         if (data[0] == MessageType.ChatMessage.value) {
-            Vars.ui.chatfrag.addMessage(chatMessagePrefix + "[coral][[[#FFFFFFFF]" + player.name + "[coral]]:[white] " + new String(data, 1, data.length - 1));
+            Vars.ui.chatfrag.addMessage(chatMessagePrefix + "[coral][[[#FFFFFFFF]" + player.name + "[coral]]:[white] " + new String(data, 1, data.length - 1, StandardCharsets.UTF_8));
         }
     }
 
