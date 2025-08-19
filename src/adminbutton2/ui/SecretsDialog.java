@@ -7,45 +7,69 @@ import arc.scene.ui.TextField;
 import mindustry.Vars;
 import mindustry.gen.Call;
 import mindustry.gen.Iconc;
+import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 
+import adminbutton2.AdminVars;
 import adminbutton2.Secret;
 
 public class SecretsDialog extends BaseDialog {
     private char icon = Core.settings.getString("adminbutton2-icon", String.valueOf(Iconc.admin)).charAt(0);
-    private TextButton chooserButton = new TextButton(String.valueOf(icon));
-    TextField formatField = new TextField();
-    TextField secretField = new TextField();
+    private int sendViaChat = 1, sendViaBuilding = 2;
+    private int sendVia = Core.settings.getInt("adminbutton2.secrets.sendVia", sendViaChat);
 
     public SecretsDialog() {
         super("@adminbutton2.secrets.title");
         BaseDialog iconChooser = iconChooserDialog();
-        formatField.setMessageText("/t {}");
         addCloseButton();
         cont.table(t -> {
-            t.table(t2 -> {
-                t2.add(chooserButton).width(50).height(50).get().changed(() -> iconChooser.show());
-                t2.add(formatField).width(350);
-            });;
-            t.row();
-            t.add(secretField).width(400).height(50).get().setMessageText("@adminbutton2.admindialog.secret_message");
-            t.row();
-            t.table(t2 -> {
-                t2.defaults().width(200).height(100);
-                t2.button("@adminbutton2.admindialog.send_secret_message", () -> sendMessage(Secret.generateSecretMessage(icon, secretField.getText())));
-                t2.button("@adminbutton2.admindialog.send_random_message", () -> sendMessage(Secret.generateRandomMessage(icon, Vars.maxTextLength - formatField.getText().length())));
-            }).marginTop(8);
+            t.button("", () -> iconChooser.show()).update(b -> b.setText(String.valueOf(icon))).size(50f);
+            t.field(AdminVars.secretMessageFormat, s -> {
+                AdminVars.secretMessageFormat = s;
+                Core.settings.put("adminbutton2.secrets.format", s);
+            }).width(350f).update(f -> f.setText(AdminVars.secretMessageFormat)).get().setMessageText("/t {}");
+        }).row();
+        TextField secretField = cont.field("", s -> {}).width(400f).height(50f).get();
+        secretField.setMessageText("@adminbutton2.admindialog.secret_message");
+        cont.row();
+        cont.table(t -> {
+            t.defaults().width(200f).height(100f);
+            t.button("@adminbutton2.admindialog.send_secret_message", () -> {
+                if (sendVia == sendViaChat) sendMessage(Secret.generateSecretMessage(icon, secretField.getText()));
+                else sendMessage(secretField.getText());
+            });
+            t.button("@adminbutton2.admindialog.send_random_message", () ->
+                sendMessage(Secret.generateRandomMessage(icon, Vars.maxTextLength - AdminVars.secretMessageFormat.length())))
+                .get().setDisabled(() -> sendVia != sendViaChat);
+        }).marginTop(8).row();
+        cont.table(t -> {
+            t.defaults().size(50f);
+            t.button(String.valueOf(Iconc.chat), Styles.togglet, () ->
+                Core.settings.put("adminbutton2.secrets.sendVia", sendVia = sendViaChat))
+                .update(b -> b.setChecked(sendVia == sendViaChat));
+            t.button(String.valueOf(Iconc.blockMessage), Styles.togglet, () ->
+                Core.settings.put("adminbutton2.secrets.sendVia", sendVia = sendViaBuilding))
+                .update(b -> b.setChecked(sendVia == sendViaBuilding));
         });
     }
 
     private void sendMessage(String message) {
-        if (!formatField.getText().contains("{}")) formatField.setText("{}");
-        String msg = formatField.getText().replaceFirst("\\{\\}", message);
-        if (msg.length() > Vars.maxTextLength) {
-            Vars.ui.showErrorMessage("@adminbutton2.admindialog.message_above_limit");
-            return;
+        if (sendVia == sendViaChat) {
+            if (!AdminVars.secretMessageFormat.contains("{}")) AdminVars.secretMessageFormat = ("{}");
+            String msg = AdminVars.secretMessageFormat.replaceFirst("\\{\\}", message);
+            if (msg.length() > Vars.maxTextLength) {
+                Vars.ui.showErrorMessage("@adminbutton2.admindialog.message_above_limit");
+                return;
+            }
+            Call.sendChatMessage(msg);
+        } else if (sendVia == sendViaBuilding) {
+            if (AdminVars.comms.selectedBuildingExists()) {
+                AdminVars.comms.sendMessage(message);
+            } else {
+                AdminVars.comms.selectBuildingAndSendMessage(message);
+                Vars.ui.showInfo("@adminbutton2.communication.selectBuilding");
+            }
         }
-        Call.sendChatMessage(msg);
     }
 
     private BaseDialog iconChooserDialog() {
@@ -59,7 +83,6 @@ public class SecretsDialog extends BaseDialog {
                 t.button(sc, () -> {
                     icon = c;
                     Core.settings.put("adminbutton2-icon", sc);
-                    chooserButton.setText(sc);
                     iconChooser.hide();
                 }).size(50);
                 icons += 1;
