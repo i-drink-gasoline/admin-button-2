@@ -4,6 +4,7 @@ package adminbutton2.ui;
 import arc.Core;
 import arc.scene.ui.TextButton;
 import arc.scene.ui.TextField;
+import arc.util.Interval;
 import mindustry.Vars;
 import mindustry.gen.Call;
 import mindustry.gen.Iconc;
@@ -17,6 +18,8 @@ public class SecretsDialog extends BaseDialog {
     private char icon = Core.settings.getString("adminbutton2-icon", String.valueOf(Iconc.admin)).charAt(0);
     private int sendViaChat = 1, sendViaBuilding = 2;
     private int sendVia = Core.settings.getInt("adminbutton2.secrets.sendVia", sendViaChat);
+    private Interval chatInterval = new Interval();
+    private boolean chatWarningShown = false;
 
     public SecretsDialog() {
         super("@adminbutton2.secrets.title");
@@ -55,6 +58,10 @@ public class SecretsDialog extends BaseDialog {
 
     private void sendMessage(String message) {
         if (sendVia == sendViaChat) {
+            if (!chatWarningShown && !chatInterval.get(60f)) {
+                chatWarningShown = true;
+                Vars.ui.showInfo("@adminbutton2.secrets.chat_warning");
+            }
             if (!AdminVars.secretMessageFormat.contains("{}")) AdminVars.secretMessageFormat = ("{}");
             String msg = AdminVars.secretMessageFormat.replaceFirst("\\{\\}", message);
             if (msg.length() > Vars.maxTextLength) {
