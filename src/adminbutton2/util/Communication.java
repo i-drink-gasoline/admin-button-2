@@ -139,7 +139,7 @@ public class Communication {
         byte[] data = inflate(bytes, 256);
         if (data == null) return;
         if (data[0] == MessageType.ChatMessage.value) {
-            Vars.ui.chatfrag.addMessage(chatMessagePrefix + "[coral][[[#FFFFFFFF]" + player.name + "[coral]]:[white] " + new String(data, 1, data.length - 1, StandardCharsets.UTF_8));
+            Vars.ui.chatfrag.addMessage(chatMessagePrefix + "[coral][[[#FFFFFFFF]" + player.coloredName() + "[coral]]:[white] " + new String(data, 1, data.length - 1, StandardCharsets.UTF_8));
         }
     }
 
