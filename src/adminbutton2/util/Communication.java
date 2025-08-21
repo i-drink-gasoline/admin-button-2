@@ -8,6 +8,7 @@ import mindustry.game.EventType;
 import mindustry.gen.Building;
 import mindustry.gen.Player;
 import mindustry.world.Tile;
+import mindustry.world.blocks.logic.CanvasBlock;
 import mindustry.world.blocks.logic.MessageBlock;
 
 import java.nio.charset.StandardCharsets;
@@ -19,6 +20,7 @@ import adminbutton2.AdminVars;
 public class Communication {
     public static final String chatMessagePrefix = "<AB2> ";
     public static final String messageMagic = "AB2\uffff";
+    public static final byte canvasMagic = -79;
     public boolean selectingBuilding = false;
     public Building selectedBuilding = null;
     public String sendOnSelect = null;
@@ -26,7 +28,7 @@ public class Communication {
     static {
         Events.on(EventType.ConfigEvent.class, e -> {
             if (e.player == null) return;
-            if (e.tile.block instanceof MessageBlock) {
+            if (e.tile.block instanceof MessageBlock || e.tile.block instanceof CanvasBlock) {
                 AdminVars.comms.readMessage(e.tile, e.player);
             }
         });
@@ -35,7 +37,10 @@ public class Communication {
                 if (e.player == Vars.player) {
                     Tile tile = Vars.world.tileWorld(Core.input.mouseWorldX(), Core.input.mouseWorldY());
                     if (tile.build == null) return;
-                    if (!(tile.build.block instanceof MessageBlock)) return;
+                    if (!tile.build.interactable(Vars.player.team())) return;
+                    if (tile.build.block instanceof MessageBlock) {
+                        if (!((MessageBlock)tile.build.block).accessible()) return;
+                    } else if (!(tile.build.block instanceof CanvasBlock)) return;
                     AdminVars.comms.selectedBuilding = tile.build;
                     AdminVars.comms.sendMessage(AdminVars.comms.sendOnSelect);
                     AdminVars.comms.selectingBuilding = false;
@@ -84,15 +89,26 @@ public class Communication {
     }
 
     public void sendMessage(String message) {
-        if (selectedBuilding == null) return;
+        if (selectedBuilding == null || !selectedBuilding.interactable(Vars.player.team())) return;
+        byte[] tmpData = message.getBytes(StandardCharsets.UTF_8);
+        byte[] data = new byte[tmpData.length + 1];
+        data[0] = MessageType.ChatMessage.value;
+        System.arraycopy(tmpData, 0, data, 1, tmpData.length);
+        byte[] deflated = deflate(data);
         if (selectedBuilding.block instanceof MessageBlock) {
-            if (!selectedBuilding.interactable(Vars.player.team()) || !((MessageBlock)selectedBuilding.block()).accessible()) return;
-            byte[] tmpData = message.getBytes(StandardCharsets.UTF_8);
-            byte[] data = new byte[tmpData.length + 1];
-            data[0] = MessageType.ChatMessage.value;
-            System.arraycopy(tmpData, 0, data, 1, tmpData.length);
-            String msg = messageMagic + BaseUTF16.encode(deflate(data));
+            if (!((MessageBlock)selectedBuilding.block()).accessible()) return;
+            String msg = messageMagic + BaseUTF16.encode(deflated);
             if (msg.length() <= ((MessageBlock)selectedBuilding.block).maxTextLength) {
+                selectedBuilding.configure(msg);
+            } else {
+                Vars.ui.chatfrag.addMessage(AdminVars.chatNotificationPrefix + "[scarlet]" + Core.bundle.get("adminbutton2.admindialog.message_above_limit"));
+            }
+        } else if (selectedBuilding.block instanceof CanvasBlock) {
+            if (deflated.length <= 253 && deflated.length + 2 <= ((CanvasBlock.CanvasBuild)selectedBuilding).data.length) {
+                byte[] msg = new byte[((CanvasBlock.CanvasBuild)selectedBuilding).data.length];
+                msg[0] = canvasMagic;
+                msg[1] = (byte)deflated.length;
+                System.arraycopy(deflated, 0, msg, 2, deflated.length);
                 selectedBuilding.configure(msg);
             } else {
                 Vars.ui.chatfrag.addMessage(AdminVars.chatNotificationPrefix + "[scarlet]" + Core.bundle.get("adminbutton2.admindialog.message_above_limit"));
@@ -111,6 +127,11 @@ public class Communication {
             } catch (IllegalArgumentException e) {
                 return;
             }
+        } else if (build.block instanceof CanvasBlock) {
+            byte[] msg = (byte[])build.config();
+            if (msg[0] != canvasMagic) return;
+            bytes = new byte[msg[1]];
+            System.arraycopy(msg, 2, bytes, 0, msg[1]);
         } else {
             return;
         }
