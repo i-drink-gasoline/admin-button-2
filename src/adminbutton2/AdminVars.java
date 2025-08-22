@@ -156,6 +156,7 @@ public class AdminVars extends Mod {
             builder.checkPref("adminbutton2.settings.override_input_handler", true, v -> Vars.ui.showInfo("@setting.macnotch.description"));
             builder.checkPref("adminbutton2.settings.override_chatfrag", true, v -> Vars.ui.showInfo("@setting.macnotch.description"));
             if (Vars.mobile) builder.checkPref("adminbutton2.settings.pause_building_button", true, v -> Vars.ui.showInfo("@setting.macnotch.description"));
+            builder.textPref("adminbutton2.commands.prefix", ".", v -> AdminVars.commands.handler.setPrefix(v));
             builder.pref(new CategorySetting("AutoFill"));
             builder.sliderPref("adminbutton2.autofill.interaction_cooldown_milliseconds", 250, 0, 5000, 25, v -> {
                 AdminVars.autofill.interactionCooldown = (float)v / 1000;
