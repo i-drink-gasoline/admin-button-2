@@ -104,7 +104,7 @@ public class Communication {
                 Vars.ui.chatfrag.addMessage(AdminVars.chatNotificationPrefix + "[scarlet]" + Core.bundle.get("adminbutton2.admindialog.message_above_limit"));
             }
         } else if (selectedBuilding.block instanceof CanvasBlock) {
-            if (deflated.length <= 253 && deflated.length + 2 <= ((CanvasBlock.CanvasBuild)selectedBuilding).data.length) {
+            if (deflated.length <= Byte.MAX_VALUE - 2 && deflated.length + 2 <= ((CanvasBlock.CanvasBuild)selectedBuilding).data.length) {
                 byte[] msg = new byte[((CanvasBlock.CanvasBuild)selectedBuilding).data.length];
                 msg[0] = canvasMagic;
                 msg[1] = (byte)deflated.length;
@@ -130,6 +130,7 @@ public class Communication {
         } else if (build.block instanceof CanvasBlock) {
             byte[] msg = (byte[])build.config();
             if (msg[0] != canvasMagic) return;
+            if (msg[1] < 0 || msg[1] > msg.length - 2) return;
             bytes = new byte[msg[1]];
             System.arraycopy(msg, 2, bytes, 0, msg[1]);
         } else {
@@ -138,6 +139,7 @@ public class Communication {
         if (bytes == null) return;
         byte[] data = inflate(bytes, 256);
         if (data == null) return;
+        if (data.length == 0) return;
         if (data[0] == MessageType.ChatMessage.value) {
             Vars.ui.chatfrag.addMessage(chatMessagePrefix + "[coral][[[#FFFFFFFF]" + player.coloredName() + "[coral]]:[white] " + new String(data, 1, data.length - 1, StandardCharsets.UTF_8));
         }
