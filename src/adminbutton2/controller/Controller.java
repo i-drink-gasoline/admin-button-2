@@ -43,7 +43,7 @@ public class Controller {
         vec.set(target).sub(unit);
         unit.lookAt(target);
         if (vec.len() > radius) {
-            vec.nor().setLength(unit.type.speed);
+            vec.nor().setLength(unit.speed());
             unit.movePref(vec);
         } else {
             unit.vel.setZero();
@@ -52,7 +52,7 @@ public class Controller {
 
     public void moveTo(Position target) {
         unit.lookAt(target);
-        vec.set(target).sub(unit).nor().setLength(unit.type.speed);
+        vec.set(target).sub(unit).nor().setLength(unit.speed());
         unit.movePref(vec);
     }
 }
