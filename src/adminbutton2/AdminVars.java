@@ -38,6 +38,7 @@ import adminbutton2.util.AutoFill;
 import adminbutton2.util.Commands;
 import adminbutton2.util.Communication;
 import adminbutton2.util.OreIndexer;
+import adminbutton2.util.PlanSaver;
 
 public class AdminVars extends Mod {
     private static final String admin_locale = "admin-button-2";
@@ -62,6 +63,7 @@ public class AdminVars extends Mod {
     public static Commands commands;
     public static AutoFill autofill;
     public static Communication comms;
+    public static PlanSaver planSaver;
 
     public static boolean controllerEnabled = false;
 
@@ -71,6 +73,7 @@ public class AdminVars extends Mod {
         commands = new Commands();
         autofill = new AutoFill();
         comms = new Communication();
+        planSaver = new PlanSaver();
 
         panel = new AdminPanel();
         admin = new AdminDialog();
@@ -155,6 +158,7 @@ public class AdminVars extends Mod {
             builder.pref(new CategorySetting("Admin Button 2"));
             builder.checkPref("adminbutton2.settings.override_input_handler", true, v -> Vars.ui.showInfo("@setting.macnotch.description"));
             builder.checkPref("adminbutton2.settings.override_chatfrag", true, v -> Vars.ui.showInfo("@setting.macnotch.description"));
+            builder.checkPref("adminbutton2.settings.plan_saver.enabled", false, v -> AdminVars.planSaver.enabled = v);
             if (Vars.mobile) builder.checkPref("adminbutton2.settings.pause_building_button", true, v -> Vars.ui.showInfo("@setting.macnotch.description"));
             builder.textPref("adminbutton2.commands.prefix", ".", v -> AdminVars.commands.handler.setPrefix(v));
             builder.pref(new CategorySetting("AutoFill"));
