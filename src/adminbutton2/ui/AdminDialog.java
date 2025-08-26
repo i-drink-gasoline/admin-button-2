@@ -13,6 +13,18 @@ import adminbutton2.AdminVars;
 public class AdminDialog extends BaseDialog {
     public AdminDialog() {
         super("@adminbutton2.admindialog.title");
+        Events.run(EventType.ClientLoadEvent.class, () -> {
+            Vars.ui.settings.getCategories().each(c -> {
+                if (c.name.equals("Admin Button 2")) {
+                    BaseDialog settings = new BaseDialog("@settings");
+                    settings.addCloseButton();
+                    settings.cont.add(c.table);
+                    buttons.button("@settings", Icon.settings, () -> {
+                        settings.show();
+                    });
+                }
+            });
+        });
         addCloseButton();
         cont.defaults().size(130).pad(5);
         cont.buttonRow("@adminbutton2.secrets.title", Icon.admin, () -> AdminVars.secrets.show());
