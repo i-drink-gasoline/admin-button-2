@@ -6,15 +6,15 @@ import java.math.BigInteger;
 public class BaseUTF16 {
     public static String encode(byte[] src) {
         BigInteger big = new BigInteger(1, src);
-        StringBuilder sb = new StringBuilder();
+        String s = "";
         while (big.compareTo(BigInteger.ZERO) > 0) {
-            sb.appendCodePoint(big.mod(BigInteger.valueOf(Character.MAX_VALUE - ' ')).intValue() + ' ');
+            s = (char)(big.mod(BigInteger.valueOf(Character.MAX_VALUE - ' ')).intValue() + ' ') + s;
             big = big.divide(BigInteger.valueOf(Character.MAX_VALUE - ' '));
         }
         for (byte b : src) {
-            if (b == 0) sb.append(' ' + 1); else break;
+            if (b == 0) s = (char)(' ' + 1) + s; else break;
         }
-        return sb.reverse().toString();
+        return s;
     }
 
     public static byte[] decode(String src) throws IllegalArgumentException {
