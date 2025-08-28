@@ -18,6 +18,7 @@ import adminbutton2.util.BaseUTF16;
 
 public class Commands {
     public CommandHandler handler = new CommandHandler(Core.settings.getString("adminbutton2.commands.prefix", "."));
+    public boolean smt = false;
 
     public Commands() {
         registerCommands();
@@ -73,6 +74,11 @@ public class Commands {
             } else {
                 AdminVars.comms.selectBuildingAndSendMessage(args[0]);
             }
+        });
+
+        handler.register("smt", "adminbutton2.command.smt.description", args -> {
+            smt = !smt;
+            Vars.ui.chatfrag.addMessage("" + smt);
         });
     }
 }

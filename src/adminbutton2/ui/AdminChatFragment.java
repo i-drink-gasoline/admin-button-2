@@ -3,11 +3,13 @@ package adminbutton2.ui;
 
 import arc.Core;
 import arc.Input.TextInput;
+import arc.scene.ui.Label;
 import arc.scene.ui.TextField;
 import arc.struct.Seq;
 import arc.util.Time;
 import mindustry.Vars;
 import mindustry.gen.Call;
+import mindustry.gen.Iconc;
 import mindustry.ui.fragments.ChatFragment;
 
 import java.lang.reflect.Field;
@@ -22,6 +24,7 @@ public class AdminChatFragment extends ChatFragment {
     private TextField chatfield;
     private Method sendMessage;
     private Seq<String> history;
+    private Label fieldlabel;
     private boolean reflected = false;
 
     @SuppressWarnings("unchecked")
@@ -41,6 +44,10 @@ public class AdminChatFragment extends ChatFragment {
             Field historyf = superclass.getDeclaredField("history");
             historyf.setAccessible(true);
             history = (Seq<String>) historyf.get(this);
+            Field fieldlabelf = superclass.getDeclaredField("fieldlabel");
+            fieldlabelf.setAccessible(true);
+            fieldlabel = (Label) fieldlabelf.get(this);
+            fieldlabel.update(() -> fieldlabel.setText(AdminVars.commands.smt ? "" + Iconc.logic : ">"));
             reflected = true;
         } catch (Exception e) {}
     }
@@ -52,6 +59,15 @@ public class AdminChatFragment extends ChatFragment {
                 clearChatInput();
                 history.insert(1, message);
                 return;
+            }
+            if (AdminVars.commands.smt && !message.startsWith("/") && !message.isEmpty()) {
+                history.insert(1, message);
+                if (AdminVars.comms.selectedBuildingExists()) {
+                    AdminVars.comms.sendMessage(message);
+                } else {
+                        AdminVars.comms.selectBuildingAndSendMessage(message);
+                }
+                chatfield.setText("");
             }
             sendMessage.invoke(this);
         } catch (Exception e) {
