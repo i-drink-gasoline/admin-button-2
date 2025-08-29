@@ -18,8 +18,9 @@ public class AdminDialog extends BaseDialog {
                 if (c.name.equals("Admin Button 2")) {
                     BaseDialog settings = new BaseDialog("@settings");
                     settings.addCloseButton();
-                    settings.cont.add(c.table);
                     buttons.button("@settings", Icon.settings, () -> {
+                        settings.cont.clear();
+                        settings.cont.add(c.table);
                         settings.show();
                     });
                 }
