@@ -149,7 +149,10 @@ public class Communication {
         if (data == null) return;
         if (data.length == 0) return;
         if (data[0] == MessageType.ChatMessage.value) {
-            Vars.ui.chatfrag.addMessage(chatMessagePrefix + "[coral][[[#FFFFFFFF]" + player.coloredName() + "[coral]]:[white] " + new String(data, 1, data.length - 1, StandardCharsets.UTF_8));
+            String message = new String(data, 1, data.length - 1, StandardCharsets.UTF_8);
+            Vars.ui.chatfrag.addMessage(chatMessagePrefix + "[coral][[[#FFFFFFFF]" + player.coloredName() + "[coral]]:[white] " + message);
+            player.lastText(message);
+            player.textFadeTime(1f);
         }
     }
 
