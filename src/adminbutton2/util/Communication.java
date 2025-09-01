@@ -42,7 +42,7 @@ public class Communication {
                         if (!((MessageBlock)tile.build.block).accessible()) return;
                     } else if (!(tile.build.block instanceof CanvasBlock)) return;
                     AdminVars.comms.selectedBuilding = tile.build;
-                    AdminVars.comms.sendMessage(AdminVars.comms.sendOnSelect);
+                    AdminVars.comms.sendChatMessage(AdminVars.comms.sendOnSelect);
                     AdminVars.comms.selectingBuilding = false;
                     AdminVars.comms.sendOnSelect = null;
                 }
@@ -88,12 +88,16 @@ public class Communication {
         }
     }
 
-    public void sendMessage(String message) {
-        if (selectedBuilding == null || !selectedBuilding.interactable(Vars.player.team())) return;
+    public void sendChatMessage(String message) {
         byte[] tmpData = message.getBytes(StandardCharsets.UTF_8);
         byte[] data = new byte[tmpData.length + 1];
         data[0] = MessageType.ChatMessage.value;
         System.arraycopy(tmpData, 0, data, 1, tmpData.length);
+        sendMessage(data);
+    }
+
+    public void sendMessage(byte[] data) {
+        if (selectedBuilding == null || !selectedBuilding.interactable(Vars.player.team())) return;
         byte[] deflated = deflate(data);
         if (selectedBuilding.block instanceof MessageBlock) {
             if (!((MessageBlock)selectedBuilding.block()).accessible()) return;
@@ -138,6 +142,10 @@ public class Communication {
         }
         if (bytes == null) return;
         byte[] data = inflate(bytes, 256);
+        processMessage(data, player);
+    }
+
+    public void processMessage(byte[] data, Player player) {
         if (data == null) return;
         if (data.length == 0) return;
         if (data[0] == MessageType.ChatMessage.value) {

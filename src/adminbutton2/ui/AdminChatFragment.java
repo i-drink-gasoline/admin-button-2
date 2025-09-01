@@ -63,7 +63,7 @@ public class AdminChatFragment extends ChatFragment {
             if (AdminVars.commands.smt && !message.startsWith("/") && !message.isEmpty()) {
                 history.insert(1, message);
                 if (AdminVars.comms.selectedBuildingExists()) {
-                    AdminVars.comms.sendMessage(message);
+                    AdminVars.comms.sendChatMessage(message);
                 } else {
                         AdminVars.comms.selectBuildingAndSendMessage(message);
                 }

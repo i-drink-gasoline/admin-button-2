@@ -71,7 +71,7 @@ public class SecretsDialog extends BaseDialog {
             Call.sendChatMessage(msg);
         } else if (sendVia == sendViaBuilding) {
             if (AdminVars.comms.selectedBuildingExists()) {
-                AdminVars.comms.sendMessage(message);
+                AdminVars.comms.sendChatMessage(message);
             } else {
                 AdminVars.comms.selectBuildingAndSendMessage(message);
                 Vars.ui.showInfo("@adminbutton2.communication.selectBuilding");

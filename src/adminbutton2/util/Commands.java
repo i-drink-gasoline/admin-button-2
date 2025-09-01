@@ -70,7 +70,7 @@ public class Commands {
 
         handler.register("sm", "<message...>", "adminbutton2.command.sm.description", args -> {
             if (AdminVars.comms.selectedBuildingExists()) {
-                AdminVars.comms.sendMessage(args[0]);
+                AdminVars.comms.sendChatMessage(args[0]);
             } else {
                 AdminVars.comms.selectBuildingAndSendMessage(args[0]);
             }
