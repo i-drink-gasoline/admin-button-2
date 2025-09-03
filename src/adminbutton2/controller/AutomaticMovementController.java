@@ -66,12 +66,19 @@ public class AutomaticMovementController extends Controller {
 
     @Override
     public void controlPlayer() {
-        Building core = unit.closestCore();
-        if (core == null) return;
+        unit.aim(Core.input.mouseWorld());
+        Vars.player.mouseX = unit.aimX();
+        Vars.player.mouseY = unit.aimY();
         if (unit.type.canBoost) Vars.player.boosting = true;
+        boolean boosted = (unit instanceof mindustry.gen.Mechc && unit.isFlying());
         if (!unit.plans.isEmpty() && Vars.control.input.isBuilding) {
             approach(unit.plans.first(), unit.type.buildRange / 1.5f);
+        } else if (Vars.player.shooting) {
+            approach(Core.input.mouseWorld(), unit.range());
+            unit.controlWeapons(true, Vars.player.shooting && !boosted);
         } else if (unit.canMine() && mine) {
+            Building core = unit.closestCore();
+            if (core == null) return;
             if (unit != previousUnit) {
                 previousUnit = unit;
                 reloadDrillables();
