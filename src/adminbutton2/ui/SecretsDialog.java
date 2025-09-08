@@ -23,10 +23,9 @@ public class SecretsDialog extends BaseDialog {
 
     public SecretsDialog() {
         super("@adminbutton2.secrets.title");
-        BaseDialog iconChooser = iconChooserDialog();
         addCloseButton();
         cont.table(t -> {
-            t.button("", () -> iconChooser.show()).update(b -> b.setText(String.valueOf(icon))).size(50f);
+                t.button("", () -> iconChooserDialog().show()).update(b -> b.setText(String.valueOf(icon))).size(50f);
             t.field(AdminVars.secretMessageFormat, s -> {
                 AdminVars.secretMessageFormat = s;
                 Core.settings.put("adminbutton2.secrets.format", s);
@@ -83,17 +82,27 @@ public class SecretsDialog extends BaseDialog {
         BaseDialog iconChooser = new BaseDialog("@adminbutton2.admindialog.icon_chooser.title");
         iconChooser.addCloseButton();
         iconChooser.cont.pane(t -> {
-            int icons = 0;
-            for (char c : Secret.icons.toCharArray()) {
-                if (icons % 8 == 0 && icons != 0) t.row();
-                String sc = String.valueOf(c);
-                t.button(sc, () -> {
+            t.table(t2 -> {
+                int icons = 0;
+                for (char c : Iconc.all.toCharArray()) {
+                    if (icons % 8 == 0 && icons != 0) t2.row();
+                    String sc = String.valueOf(c);
+                    t2.button(sc, () -> {
+                        icon = c;
+                        Core.settings.put("adminbutton2-icon", sc);
+                        iconChooser.hide();
+                    }).size(50);
+                    icons += 1;
+                }
+            }).growX().row();
+            t.field("" + icon, s -> {
+                if (s.length() == 1) {
+                    char c = s.charAt(0);
                     icon = c;
-                    Core.settings.put("adminbutton2-icon", sc);
+                    Core.settings.put("adminbutton2-icon", String.valueOf(c));
                     iconChooser.hide();
-                }).size(50);
-                icons += 1;
-            }
+                }
+            }).get().setMaxLength(1);
         }).growX();
         return iconChooser;
     }

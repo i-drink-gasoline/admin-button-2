@@ -2,7 +2,6 @@
 package adminbutton2;
 
 import arc.math.Mathf;
-import mindustry.gen.Iconc;
 
 import java.nio.charset.StandardCharsets;
 import java.util.zip.Deflater;
@@ -11,7 +10,6 @@ import java.util.zip.Inflater;
 import adminbutton2.BaseColor;
 
 public class Secret {
-    public static String icons = Iconc.all + "♿";
     public static String generateSecretMessage(char icon, String message) {
         Deflater deflater = new Deflater(Deflater.BEST_COMPRESSION);
         deflater.setInput(message.getBytes(StandardCharsets.UTF_8));
@@ -37,9 +35,13 @@ public class Secret {
         boolean expectBase = false;
         boolean expectClose = false;
         boolean expectIcon = false;
+        char firstIcon = 0;
         int bases = 0;
         String best = "";
         for (char c : message.toCharArray()) {
+            if (expectIcon) {
+                if (firstIcon == 0) firstIcon = c;
+            }
             if (expectOpen && c == '[') {
                 expectOpen = false;
                 expectNumber = true;
@@ -58,7 +60,7 @@ public class Secret {
                 expectClose = false;
                 expectBase = false;
                 expectIcon = true;
-            } else if (expectIcon && icons.indexOf(c) != -1) {
+            } else if (expectIcon && c == firstIcon) {
                 expectIcon = false;
                 expectOpen = true;
             } else {
