@@ -47,6 +47,7 @@ public class AdminPanel {
         addButton(admin);
         addButton("@adminbutton2.controller.title", Icon.logic, () -> AdminVars.control.show());
         addButton("@adminbutton2.imagegenerator.title", Icon.image, () -> AdminVars.image.show());
+        addButton("@adminbutton2.chatdialog.title", Icon.chat, () -> AdminVars.chat.show());
         addButton("@adminbutton2.message_list.title", Icon.chat, () -> AdminVars.messages.show());
         addButton("@adminbutton2.secrets.title", Icon.admin, () -> AdminVars.secrets.show());
         addButton("@rules.waves", Icon.waves, () -> AdminVars.waves.show());

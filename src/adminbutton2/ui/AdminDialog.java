@@ -29,7 +29,7 @@ public class AdminDialog extends BaseDialog {
         addCloseButton();
         cont.defaults().size(130).pad(5);
         cont.buttonRow("@adminbutton2.secrets.title", Icon.admin, () -> AdminVars.secrets.show());
-        cont.buttonRow("@adminbutton2.message_list.title", Icon.chat, () -> AdminVars.messages.show());
+        cont.buttonRow("@adminbutton2.chatdialog.title", Icon.chat, () -> AdminVars.chat.show());
         TextButton waves = cont.buttonRow("@rules.waves", Icon.waves, () -> AdminVars.waves.show()).get();
         Events.run(EventType.WorldLoadEvent.class, () -> waves.setDisabled(!Vars.state.rules.waves));
         cont.row();

@@ -55,6 +55,15 @@ public class AdminChatFragment extends ChatFragment {
     private void sendMessage() {
         String message = chatfield.getText().trim();
         try {
+            String prefix = Core.settings.getString("adminbutton2.chat.messagePrefix", "");
+            String postfix = Core.settings.getString("adminbutton2.chat.messagePostfix", "");
+            if (!message.startsWith("/") && !message.isEmpty() && !(message.startsWith(prefix) && message.endsWith(postfix))) {
+                String formattedMessage = prefix + message + postfix;
+                if (formattedMessage.length() <= Vars.maxTextLength) {
+                    chatfield.setText(formattedMessage);
+                    message = formattedMessage;
+                }
+            }
             if (AdminVars.commands.runCommand(message)) {
                 clearChatInput();
                 history.insert(1, message);
@@ -65,9 +74,11 @@ public class AdminChatFragment extends ChatFragment {
                 if (AdminVars.comms.selectedBuildingExists()) {
                     AdminVars.comms.sendChatMessage(message);
                 } else {
-                        AdminVars.comms.selectBuildingAndSendMessage(message);
+                    AdminVars.comms.selectBuildingAndSendMessage(message);
                 }
                 chatfield.setText("");
+                sendMessage.invoke(this);
+                return;
             }
             sendMessage.invoke(this);
         } catch (Exception e) {

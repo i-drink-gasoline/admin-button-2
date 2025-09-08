@@ -28,6 +28,7 @@ import adminbutton2.input.ControllerMobileInput;
 import adminbutton2.ui.AdminChatFragment;
 import adminbutton2.ui.AdminDialog;
 import adminbutton2.ui.AutoFillConfigDialog;
+import adminbutton2.ui.ChatDialog;
 import adminbutton2.ui.ControllerDialog;
 import adminbutton2.ui.ImageGeneratorDialog;
 import adminbutton2.ui.MessageList;
@@ -56,6 +57,7 @@ public class AdminVars extends Mod {
     public static ImageGeneratorDialog image;
     public static PanelConfigDialog panelConfig;
     public static AutoFillConfigDialog autofillConfig;
+    public static ChatDialog chat;
 
     public static Controller controller;
 
@@ -84,6 +86,7 @@ public class AdminVars extends Mod {
         image = new ImageGeneratorDialog();
         panelConfig = new PanelConfigDialog();
         autofillConfig = new AutoFillConfigDialog();
+        chat = new ChatDialog();
         control.setController(control.controllers[0]);
         if (Core.settings.getBool("adminbutton2.settings.override_input_handler", true)) {
             Vars.control.input = Vars.mobile ? new ControllerMobileInput() : new ControllerDesktopInput();
