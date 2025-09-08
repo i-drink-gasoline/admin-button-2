@@ -64,7 +64,7 @@ public class AdminVars extends Mod {
     public static OreIndexer oreIndexer;
     public static Commands commands;
     public static AutoFill autofill;
-    public static Communication comms;
+    public static Communication communication;
     public static PlanSaver planSaver;
 
     public static boolean controllerEnabled = false;
@@ -74,7 +74,7 @@ public class AdminVars extends Mod {
         oreIndexer = new OreIndexer();
         commands = new Commands();
         autofill = new AutoFill();
-        comms = new Communication();
+        communication = new Communication();
         planSaver = new PlanSaver();
 
         panel = new AdminPanel();

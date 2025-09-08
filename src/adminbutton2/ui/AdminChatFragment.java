@@ -71,10 +71,10 @@ public class AdminChatFragment extends ChatFragment {
             }
             if (AdminVars.commands.smt && !message.startsWith("/") && !message.isEmpty()) {
                 history.insert(1, message);
-                if (AdminVars.comms.selectedBuildingExists()) {
-                    AdminVars.comms.sendChatMessage(message);
+                if (AdminVars.communication.selectedBuildingExists()) {
+                    AdminVars.communication.sendChatMessage(message);
                 } else {
-                    AdminVars.comms.selectBuildingAndSendMessage(message);
+                    AdminVars.communication.selectBuildingAndSendMessage(message);
                 }
                 chatfield.setText("");
                 sendMessage.invoke(this);

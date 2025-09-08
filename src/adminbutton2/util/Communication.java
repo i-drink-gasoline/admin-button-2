@@ -29,11 +29,11 @@ public class Communication {
         Events.on(EventType.ConfigEvent.class, e -> {
             if (e.player == null) return;
             if (e.tile.block instanceof MessageBlock || e.tile.block instanceof CanvasBlock) {
-                AdminVars.comms.readMessage(e.tile, e.player);
+                AdminVars.communication.readMessage(e.tile, e.player);
             }
         });
         Events.on(EventType.TapEvent.class, e -> {
-            if (AdminVars.comms.selectingBuilding) {
+            if (AdminVars.communication.selectingBuilding) {
                 if (e.player == Vars.player) {
                     Tile tile = Vars.world.tileWorld(Core.input.mouseWorldX(), Core.input.mouseWorldY());
                     if (tile.build == null) return;
@@ -41,14 +41,14 @@ public class Communication {
                     if (tile.build.block instanceof MessageBlock) {
                         if (!((MessageBlock)tile.build.block).accessible()) return;
                     } else if (!(tile.build.block instanceof CanvasBlock)) return;
-                    AdminVars.comms.selectedBuilding = tile.build;
-                    AdminVars.comms.sendChatMessage(AdminVars.comms.sendOnSelect);
-                    AdminVars.comms.selectingBuilding = false;
-                    AdminVars.comms.sendOnSelect = null;
+                    AdminVars.communication.selectedBuilding = tile.build;
+                    AdminVars.communication.sendChatMessage(AdminVars.communication.sendOnSelect);
+                    AdminVars.communication.selectingBuilding = false;
+                    AdminVars.communication.sendOnSelect = null;
                 }
             }
         });
-        Events.run(EventType.WorldLoadEvent.class, () -> AdminVars.comms.selectedBuilding = null);
+        Events.run(EventType.WorldLoadEvent.class, () -> AdminVars.communication.selectedBuilding = null);
     }
 
     public boolean selectedBuildingExists() {

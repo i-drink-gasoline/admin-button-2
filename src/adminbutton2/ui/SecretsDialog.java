@@ -69,10 +69,10 @@ public class SecretsDialog extends BaseDialog {
             }
             Call.sendChatMessage(msg);
         } else if (sendVia == sendViaBuilding) {
-            if (AdminVars.comms.selectedBuildingExists()) {
-                AdminVars.comms.sendChatMessage(message);
+            if (AdminVars.communication.selectedBuildingExists()) {
+                AdminVars.communication.sendChatMessage(message);
             } else {
-                AdminVars.comms.selectBuildingAndSendMessage(message);
+                AdminVars.communication.selectBuildingAndSendMessage(message);
                 Vars.ui.showInfo("@adminbutton2.communication.selectBuilding");
             }
         }
