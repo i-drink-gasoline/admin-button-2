@@ -21,6 +21,7 @@ public class Communication {
     public static final String chatMessagePrefix = "<AB2> ";
     public static final String messageMagic = "AB2\uffff";
     public static final byte canvasMagic = -79;
+    public BaseUTF16 messageBase = new BaseUTF16('!', Character.MAX_VALUE);
     public boolean selectingBuilding = false;
     public Building selectedBuilding = null;
     public String sendOnSelect = null;
@@ -101,7 +102,7 @@ public class Communication {
         byte[] deflated = deflate(data);
         if (selectedBuilding.block instanceof MessageBlock) {
             if (!((MessageBlock)selectedBuilding.block()).accessible()) return;
-            String msg = messageMagic + BaseUTF16.encode(deflated);
+            String msg = messageMagic + messageBase.encode(deflated);
             if (msg.length() <= ((MessageBlock)selectedBuilding.block).maxTextLength) {
                 selectedBuilding.configure(msg);
             } else {
@@ -127,7 +128,7 @@ public class Communication {
             if (!message.startsWith(messageMagic)) return;
             message = message.substring(messageMagic.length());
             try {
-                bytes = BaseUTF16.decode(message);
+                bytes = messageBase.decode(message);
             } catch (IllegalArgumentException e) {
                 return;
             }

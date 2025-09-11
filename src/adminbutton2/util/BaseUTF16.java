@@ -4,28 +4,38 @@ package adminbutton2.util;
 import java.math.BigInteger;
 
 public class BaseUTF16 {
-    public static String encode(byte[] src) {
+    private char minChar = 0x80;
+    private char maxChar = Character.MAX_VALUE;
+
+    public BaseUTF16(char minChar, char maxChar) {
+        this.minChar = minChar;
+        this.maxChar = maxChar;
+    }
+
+    public String encode(byte[] src) {
         BigInteger big = new BigInteger(1, src);
         String s = "";
+        int diff = maxChar - minChar + 1;
         while (big.compareTo(BigInteger.ZERO) > 0) {
-            s = (char)(big.mod(BigInteger.valueOf(Character.MAX_VALUE - ' ')).intValue() + ' ') + s;
-            big = big.divide(BigInteger.valueOf(Character.MAX_VALUE - ' '));
+            s = (char)(big.mod(BigInteger.valueOf(diff)).intValue() + minChar) + s;
+            big = big.divide(BigInteger.valueOf(diff));
         }
         for (byte b : src) {
-            if (b == 0) s = (char)(' ' + 1) + s; else break;
+            if (b == 0) s = (char)(minChar) + s; else break;
         }
         return s;
     }
 
-    public static byte[] decode(String src) throws IllegalArgumentException {
+    public byte[] decode(String src) throws IllegalArgumentException {
         BigInteger big = BigInteger.ZERO;
+        int diff = maxChar - minChar + 1;
         for (char c : src.toCharArray()) {
-            if (c <= ' ') throw new IllegalArgumentException("Invalid codepoint: " + (int)c);
-            big = big.multiply(BigInteger.valueOf(Character.MAX_VALUE - ' ')).add(BigInteger.valueOf(c - ' '));
+            if (c < minChar) throw new IllegalArgumentException("Invalid codepoint: " + (int)c);
+            big = big.multiply(BigInteger.valueOf(diff)).add(BigInteger.valueOf(c - minChar));
         }
         int zeros = 0;
         for (char c : src.toCharArray()) {
-            if (c == ' ' + 1) zeros++;
+            if (c == minChar) zeros++;
             else break;
         }
         byte[] decoded = big.toByteArray();
