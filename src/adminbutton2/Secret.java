@@ -71,6 +71,7 @@ public class Secret {
                 expectBase = false;
                 expectClose = false;
                 expectIcon = false;
+                firstIcon = 0;
                 bases = 0;
             }
         }
