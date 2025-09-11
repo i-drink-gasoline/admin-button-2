@@ -4,8 +4,8 @@ package adminbutton2.util;
 import java.math.BigInteger;
 
 public class BaseUTF16 {
-    private char minChar = 0x80;
-    private char maxChar = Character.MAX_VALUE;
+    private char minChar;
+    private char maxChar;
 
     public BaseUTF16(char minChar, char maxChar) {
         this.minChar = minChar;
