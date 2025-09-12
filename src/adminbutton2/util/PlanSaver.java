@@ -31,6 +31,5 @@ public class PlanSaver {
                 AdminVars.planSaver.plans.add(p);
             });
         });
-        Events.run(EventType.WorldLoadEvent.class, () -> AdminVars.planSaver.plans.clear());
     }
 }
