@@ -7,7 +7,6 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
-import arc.util.Interval;
 import arc.util.Time;
 import mindustry.Vars;
 import mindustry.entities.bullet.BulletType;
@@ -34,9 +33,7 @@ public class AutoFill {
     public boolean enabled = false;
     public boolean fillOnlySelectedBuildings = false;
     public int coreMinimumRequestAmount;
-    public float interactionCooldown;
     public boolean[] fillMap;
-    Interval interval = new Interval();
     static Seq<Building> selected = new Seq<>();
     Seq<Building> validCloseBuildings = new Seq<>();
     Building core;
@@ -107,10 +104,10 @@ public class AutoFill {
     }
 
     public void update() {
-        if (!enabled) return;
+        if (!enabled || AdminVars.interaction.interacting) return;
         selected.removeAll(b -> b.tile.build != b);
         if (Vars.state.rules.onlyDepositCore) return;
-        if (!interval.get(60f * interactionCooldown)) return;
+        if (!AdminVars.interaction.willInteract()) return;
         unit = Vars.player.unit();
         core = unit.closestCore();
         Target target = getBestTarget(selected);

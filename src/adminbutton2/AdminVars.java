@@ -38,6 +38,7 @@ import adminbutton2.ui.WavesDialog;
 import adminbutton2.util.AutoFill;
 import adminbutton2.util.Commands;
 import adminbutton2.util.Communication;
+import adminbutton2.util.Interaction;
 import adminbutton2.util.OreIndexer;
 import adminbutton2.util.PlanSaver;
 
@@ -66,6 +67,7 @@ public class AdminVars extends Mod {
     public static AutoFill autofill;
     public static Communication communication;
     public static PlanSaver planSaver;
+    public static Interaction interaction;
 
     public static boolean controllerEnabled = false;
 
@@ -76,6 +78,7 @@ public class AdminVars extends Mod {
         autofill = new AutoFill();
         communication = new Communication();
         planSaver = new PlanSaver();
+        interaction = new Interaction();
 
         panel = new AdminPanel();
         admin = new AdminDialog();
@@ -164,11 +167,11 @@ public class AdminVars extends Mod {
             builder.checkPref("adminbutton2.settings.plan_saver.enabled", false, v -> AdminVars.planSaver.enabled = v);
             if (Vars.mobile) builder.checkPref("adminbutton2.settings.pause_building_button", true, v -> Vars.ui.showInfo("@setting.macnotch.description"));
             builder.textPref("adminbutton2.commands.prefix", ".", v -> AdminVars.commands.handler.setPrefix(v));
-            builder.pref(new CategorySetting("AutoFill"));
-            builder.sliderPref("adminbutton2.autofill.interaction_cooldown_milliseconds", 250, 0, 5000, 25, v -> {
-                AdminVars.autofill.interactionCooldown = (float)v / 1000;
+            builder.sliderPref("adminbutton2.interaction.interaction_cooldown_milliseconds", 250, 0, 5000, 25, v -> {
+                AdminVars.interaction.interactionCooldown = (float)v / 1000;
                 return Core.bundle.format("setting.milliseconds", v);
             });
+            builder.pref(new CategorySetting("AutoFill"));
             builder.sliderPref("adminbutton2.autofill.core_minimum_request_amount", 30, 1, 500, 1, v -> {
                 AdminVars.autofill.coreMinimumRequestAmount = v;
                 return "" + v;
