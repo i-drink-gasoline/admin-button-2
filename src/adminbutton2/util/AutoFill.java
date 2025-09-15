@@ -3,6 +3,7 @@ package adminbutton2.util;
 
 import arc.Core;
 import arc.Events;
+import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.struct.ObjectMap;
@@ -35,6 +36,7 @@ public class AutoFill {
     public int coreMinimumRequestAmount;
     public boolean[] fillMap;
     static Seq<Building> selected = new Seq<>();
+    public Color colorSelected = Pal.accent.cpy().a(0.75f).premultiplyAlpha(), colorSelectedNear = Pal.accent.cpy().a(0.75f), colorNear = Pal.plastanium.cpy().a(0.75f), colorCore = Pal.reactorPurple2.cpy().a(0.75f);
     Seq<Building> validCloseBuildings = new Seq<>();
     Building core;
     Unit unit;
@@ -87,18 +89,24 @@ public class AutoFill {
         if (!enabled || Vars.state.rules.onlyDepositCore) return;
         float draw_rot = Time.time;
         Draw.z(Layer.effect);
-        Draw.color(Pal.accent);
-        Draw.alpha(0.75f);
         selected.each(b -> {
+            Color color = colorSelected;
+            if (Vars.player.within(b, Vars.itemTransferRange)) color = colorSelectedNear;
+            Draw.color(color);
             Lines.square(b.x, b.y, b.block.size * Vars.tilesize / 1.5f, draw_rot);
         });
         if (!fillOnlySelectedBuildings) {
-            Draw.color(Pal.plastanium);
+            Draw.color(colorNear);
             Vars.indexer.eachBlock(Vars.player.unit(), Vars.itemTransferRange, b -> {
                 return shouldFillBuilding(b) && !selected.contains(b);
             }, b -> {
                 Lines.square(b.x, b.y, b.block.size * Vars.tilesize / 1.5f, draw_rot);
             });
+        }
+        core = Vars.player.unit().closestCore();
+        if (core != null && Vars.player.within(core, Vars.itemTransferRange)) {
+            Draw.color(colorCore);
+            Lines.square(core.x, core.y, core.block.size * Vars.tilesize / 1.5f, draw_rot);
         }
         Draw.reset();
     }
