@@ -18,7 +18,11 @@ public class ChatDialog extends BaseDialog {
     public ChatDialog() {
         super("@adminbutton2.chatdialog.title");
         addCloseButton();
-        cont.buttonRow("@adminbutton2.message_list.title", Icon.chat, () -> AdminVars.messages.show()).get().getLabel().setWrap(false);
+        cont.table(t -> {
+            t.defaults().pad(0f, 4f, 0f, 4f).growY();
+            t.buttonRow("@adminbutton2.message_list.title", Icon.chat, () -> AdminVars.messages.show()).get().getLabel().setWrap(false);
+            t.buttonRow("@adminbutton2.command.help.dialog.title", Icon.bookOpen, () -> AdminVars.commands.runCommand(AdminVars.commands.handler.getPrefix() + "help")).get().getLabel().setWrap(false);
+        });
         cont.row();
         cont.table(Tex.button, t -> {
             t.button(Tex.whiteui, Styles.squarei, 40, () -> {
