@@ -91,15 +91,9 @@ public class Commands {
         });
 
         handler.register("linknodes", "adminbutton2.command.linknodes.description", args -> {
-            try {
-                Method method = PowerNode.class.getDeclaredMethod("getPotentialLinks", Tile.class, Team.class, Cons.class);
-                method.setAccessible(true);
-            } catch (NoSuchMethodException e) {
-                Vars.ui.showException(e);
-                return;
-            }
-            Seq<Building> buildings = new Seq<>();
             if (Vars.player.team().data().buildingTree == null) return;
+            if (AdminVars.interaction.interacting) return;
+            Seq<Building> buildings = new Seq<>();
             Vars.player.team().data().buildingTree.getObjects(buildings);
             Seq<PowerNode.PowerNodeBuild> nodes = new Seq<>();
             for (int i = buildings.size - 1; i >= 0; i--) {
