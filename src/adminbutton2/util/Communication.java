@@ -8,6 +8,7 @@ import arc.math.Mathf;
 import arc.scene.event.Touchable;
 import arc.scene.ui.Label;
 import arc.scene.ui.layout.Table;
+import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.io.Streams.OptimizedByteArrayOutputStream;
 import mindustry.Vars;
@@ -20,6 +21,7 @@ import mindustry.gen.Tex;
 import mindustry.input.InputHandler;
 import mindustry.world.Tile;
 import mindustry.world.blocks.logic.CanvasBlock;
+import mindustry.world.blocks.logic.LogicBlock;
 import mindustry.world.blocks.logic.MessageBlock;
 
 import java.io.ByteArrayInputStream;
@@ -34,16 +36,20 @@ import adminbutton2.AdminVars;
 public class Communication {
     public static final String chatMessagePrefix = "<AB2> ";
     public static final String messageMagic = "AB2\uffff";
+    public static final String logicMagicStart = "stop\nprint \"(Admin Button 2) mod communication\uffff\"\nprint \"";
+    public static final String logicMagicEnd = "\"";
     public static final byte canvasMagic = -79;
     public BaseUTF16 messageBase = new BaseUTF16('!', Character.MAX_VALUE);
+    public BaseUTF16 logicBase = new BaseUTF16((char)0x80, (char)0xD7FF);
     public boolean selectingBuilding = false;
     public Building selectedBuilding = null;
     public Runnable runOnSelect = null;
+    public int chatMessageMaxLength = Vars.maxTextLength * 2;
 
     static {
         Events.on(EventType.ConfigEvent.class, e -> {
             if (e.player == null) return;
-            if (e.tile.block instanceof MessageBlock || e.tile.block instanceof CanvasBlock) {
+            if (e.tile.block instanceof MessageBlock || e.tile.block instanceof CanvasBlock || e.tile.block instanceof LogicBlock) {
                 AdminVars.communication.readMessage(e.tile, e.player);
             }
         });
@@ -55,6 +61,8 @@ public class Communication {
                     if (!tile.build.interactable(Vars.player.team())) return;
                     if (tile.build.block instanceof MessageBlock) {
                         if (!((MessageBlock)tile.build.block).accessible()) return;
+                    } else if (tile.build.block instanceof LogicBlock) {
+                        if (!((LogicBlock)tile.build.block).accessible()) return;
                     } else if (!(tile.build.block instanceof CanvasBlock)) return;
                     AdminVars.communication.selectedBuilding = tile.build;
                     AdminVars.communication.runOnSelect.run();
@@ -142,6 +150,15 @@ public class Communication {
             } else {
                 Vars.ui.chatfrag.addMessage(AdminVars.chatNotificationPrefix + "[scarlet]" + Core.bundle.get("adminbutton2.admindialog.message_above_limit"));
             }
+        } else if (selectedBuilding.block instanceof LogicBlock) {
+            if (!((LogicBlock)selectedBuilding.block()).accessible()) return;
+            String msg = logicMagicStart + logicBase.encode(deflated) + logicMagicEnd;
+            byte[] bytes = LogicBlock.compress(msg, new Seq<>());
+            if (bytes.length - Integer.BYTES <= Short.MAX_VALUE / 2) {;
+                selectedBuilding.configure(bytes);
+            } else {
+                Vars.ui.chatfrag.addMessage(AdminVars.chatNotificationPrefix + "[scarlet]" + Core.bundle.get("adminbutton2.admindialog.message_above_limit"));
+            }
         } else if (selectedBuilding.block instanceof CanvasBlock) {
             if (deflated.length <= Byte.MAX_VALUE - 2 && deflated.length + 2 <= ((CanvasBlock.CanvasBuild)selectedBuilding).data.length) {
                 byte[] msg = new byte[((CanvasBlock.CanvasBuild)selectedBuilding).data.length];
@@ -166,6 +183,15 @@ public class Communication {
             } catch (IllegalArgumentException e) {
                 return;
             }
+        } else if (build.block instanceof LogicBlock) {
+            String message = ((LogicBlock.LogicBuild)build).code;
+            if (!message.startsWith(logicMagicStart) || !message.endsWith(logicMagicEnd)) return;
+            message = message.substring(logicMagicStart.length(), message.length() - logicMagicEnd.length());
+            try {
+                bytes = logicBase.decode(message);
+            } catch (IllegalArgumentException e) {
+                return;
+            }
         } else if (build.block instanceof CanvasBlock) {
             byte[] msg = (byte[])build.config();
             if (msg[0] != canvasMagic) return;
@@ -176,7 +202,7 @@ public class Communication {
             return;
         }
         if (bytes == null) return;
-        byte[] fullData = inflate(bytes, 512);
+        byte[] fullData = inflate(bytes, 1<<16);
         if (fullData == null || fullData.length == 0) return;
         byte[] data = new byte[fullData.length - 1];
         System.arraycopy(fullData, 1, data, 0, data.length);
@@ -187,6 +213,7 @@ public class Communication {
         if (data == null) return;
         if (type == MessageType.ChatMessage.value) {
             String message = new String(data, 0, data.length, StandardCharsets.UTF_8);
+            message = message.length() > chatMessageMaxLength ? message.substring(0, chatMessageMaxLength) : message;
             Vars.ui.chatfrag.addMessage(chatMessagePrefix + "[coral][[[#FFFFFFFF]" + player.coloredName() + "[coral]]:[white] " + message);
             player.lastText(message);
             player.textFadeTime(1f);
