@@ -74,7 +74,8 @@ public class AdminChatFragment extends ChatFragment {
                 if (AdminVars.communication.selectedBuildingExists()) {
                     AdminVars.communication.sendChatMessage(message);
                 } else {
-                    AdminVars.communication.selectBuildingAndSendMessage(message);
+                    String msg = message;
+                    AdminVars.communication.selectBuildingAndRun(() -> AdminVars.communication.sendChatMessage(msg));
                 }
                 chatfield.setText("");
                 sendMessage.invoke(this);

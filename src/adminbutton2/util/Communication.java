@@ -3,14 +3,28 @@ package adminbutton2.util;
 
 import arc.Core;
 import arc.Events;
+import arc.math.Interp;
+import arc.math.Mathf;
+import arc.scene.event.Touchable;
+import arc.scene.ui.Label;
+import arc.scene.ui.layout.Table;
+import arc.util.Time;
+import arc.util.io.Streams.OptimizedByteArrayOutputStream;
 import mindustry.Vars;
 import mindustry.game.EventType;
+import mindustry.game.Schematic;
 import mindustry.gen.Building;
+import mindustry.gen.Icon;
 import mindustry.gen.Player;
+import mindustry.gen.Tex;
+import mindustry.input.InputHandler;
 import mindustry.world.Tile;
 import mindustry.world.blocks.logic.CanvasBlock;
 import mindustry.world.blocks.logic.MessageBlock;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
@@ -24,7 +38,7 @@ public class Communication {
     public BaseUTF16 messageBase = new BaseUTF16('!', Character.MAX_VALUE);
     public boolean selectingBuilding = false;
     public Building selectedBuilding = null;
-    public String sendOnSelect = null;
+    public Runnable runOnSelect = null;
 
     static {
         Events.on(EventType.ConfigEvent.class, e -> {
@@ -43,9 +57,9 @@ public class Communication {
                         if (!((MessageBlock)tile.build.block).accessible()) return;
                     } else if (!(tile.build.block instanceof CanvasBlock)) return;
                     AdminVars.communication.selectedBuilding = tile.build;
-                    AdminVars.communication.sendChatMessage(AdminVars.communication.sendOnSelect);
+                    AdminVars.communication.runOnSelect.run();
                     AdminVars.communication.selectingBuilding = false;
-                    AdminVars.communication.sendOnSelect = null;
+                    AdminVars.communication.runOnSelect = null;
                 }
             }
         });
@@ -56,9 +70,9 @@ public class Communication {
         return selectedBuilding != null && selectedBuilding.tile().build == selectedBuilding;
     }
 
-    public void selectBuildingAndSendMessage(String message) {
+    public void selectBuildingAndRun(Runnable runnable) {
         selectingBuilding = true;
-        sendOnSelect = message;
+        runOnSelect = runnable;
         Vars.ui.chatfrag.addMessage(AdminVars.chatNotificationPrefix + "[scarlet]" + Core.bundle.get("adminbutton2.communication.selectBuilding"));
     }
 
@@ -90,13 +104,33 @@ public class Communication {
     }
 
     public void sendChatMessage(String message) {
-        byte[] tmpData = message.getBytes(StandardCharsets.UTF_8);
-        byte[] data = new byte[tmpData.length + 1];
-        data[0] = MessageType.ChatMessage.value;
-        System.arraycopy(tmpData, 0, data, 1, tmpData.length);
-        sendMessage(data);
+        byte[] data = message.getBytes(StandardCharsets.UTF_8);
+        sendMessage(MessageType.ChatMessage, data);
     }
 
+    public void sendSchematic(Schematic schematic) {
+        OptimizedByteArrayOutputStream out = new OptimizedByteArrayOutputStream(1024);
+        try {
+            Vars.schematics.write(schematic, out);
+        } catch (IOException e) {
+            Vars.ui.showException(e);
+        }
+        byte[] data = new byte[out.size()];
+        System.arraycopy(out.getBuffer(), 0, data, 0, out.size());
+        sendMessage(MessageType.Schematic, data);
+    }
+
+    public void sendMessage(MessageType type, byte[] data) {
+        sendMessage(type.value, data);
+    }
+
+    public void sendMessage(byte type, byte[] data) {
+        byte[] fullData = new byte[data.length + 1];
+        fullData[0] = type;
+        System.arraycopy(data, 0, fullData, 1, data.length);
+        sendMessage(fullData);
+    }
+    
     public void sendMessage(byte[] data) {
         if (selectedBuilding == null || !selectedBuilding.interactable(Vars.player.team())) return;
         byte[] deflated = deflate(data);
@@ -142,23 +176,67 @@ public class Communication {
             return;
         }
         if (bytes == null) return;
-        byte[] data = inflate(bytes, 256);
-        processMessage(data, player);
+        byte[] fullData = inflate(bytes, 512);
+        if (fullData == null || fullData.length == 0) return;
+        byte[] data = new byte[fullData.length - 1];
+        System.arraycopy(fullData, 1, data, 0, data.length);
+        processMessage(fullData[0], data, player);
     }
 
-    public void processMessage(byte[] data, Player player) {
+    public void processMessage(byte type, byte[] data, Player player) {
         if (data == null) return;
-        if (data.length == 0) return;
-        if (data[0] == MessageType.ChatMessage.value) {
-            String message = new String(data, 1, data.length - 1, StandardCharsets.UTF_8);
+        if (type == MessageType.ChatMessage.value) {
+            String message = new String(data, 0, data.length, StandardCharsets.UTF_8);
             Vars.ui.chatfrag.addMessage(chatMessagePrefix + "[coral][[[#FFFFFFFF]" + player.coloredName() + "[coral]]:[white] " + message);
             player.lastText(message);
             player.textFadeTime(1f);
+        } else if (type == MessageType.Schematic.value) {
+            Table firstTable = new Table();
+            firstTable.bottom();
+            Table table = firstTable.table(Tex.paneSolid).get();
+            table.touchable = Touchable.enabled;
+            String name = player.name == null ? "null" : player.name;
+            table.add(Core.bundle.format("adminbutton2.communication.playerSharedSchematic", name)).padBottom(8f).row();
+            table.table(t -> {
+                t.defaults().size(40f).pad(0f, 4f, 0f, 4f);
+                t.add().width(40f);
+                t.add().growX();
+                t.button(Icon.eyeSmall, () -> {
+                    try {
+                        Vars.ui.schematics.showInfo(Vars.schematics.read(new ByteArrayInputStream(data)));
+                    } catch (IOException e) {
+                        Vars.ui.showException(e);
+                    }
+                });
+                t.button(Icon.saveSmall, () -> {
+                    try {
+                        Vars.control.input.lastSchematic = Vars.schematics.read(new ByteArrayInputStream(data));
+                        Method showSchematicSave = InputHandler.class.getDeclaredMethod("showSchematicSave");
+                        showSchematicSave.setAccessible(true);
+                        showSchematicSave.invoke(Vars.control.input);
+                    } catch (Exception e) {
+                        Vars.ui.showException(e);
+                    }
+                });
+                t.button(Icon.cancelSmall, () -> table.remove()).width(40f);
+                t.add().growX();
+                Label timer = t.add("").width(40f).get();
+                float time = Time.time + (30 * Time.toSeconds);
+                timer.update(() -> {
+                    float timeLeft = ((time - Time.time) / Time.toSeconds);
+                    timer.setText("" + Mathf.ceil(timeLeft));
+                    if (timeLeft < 0) firstTable.remove();
+                });
+            });
+            firstTable.setFillParent(true);
+            Core.scene.add(firstTable);
         }
     }
 
     public enum MessageType {
-        ChatMessage((byte)0);
+        ChatMessage((byte)0),
+        Schematic((byte)1),
+        ;
 
         public final byte value;
         MessageType(byte value) {

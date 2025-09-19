@@ -81,7 +81,7 @@ public class Commands {
             if (AdminVars.communication.selectedBuildingExists()) {
                 AdminVars.communication.sendChatMessage(args[0]);
             } else {
-                AdminVars.communication.selectBuildingAndSendMessage(args[0]);
+                AdminVars.communication.selectBuildingAndRun(() -> AdminVars.communication.sendChatMessage(args[0]));
             }
         });
 

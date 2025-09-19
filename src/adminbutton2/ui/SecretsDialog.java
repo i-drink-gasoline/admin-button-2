@@ -6,6 +6,7 @@ import arc.scene.ui.TextButton;
 import arc.scene.ui.TextField;
 import arc.util.Interval;
 import mindustry.Vars;
+import mindustry.game.Schematic;
 import mindustry.gen.Call;
 import mindustry.gen.Iconc;
 import mindustry.ui.Styles;
@@ -52,7 +53,22 @@ public class SecretsDialog extends BaseDialog {
             t.button(String.valueOf(Iconc.blockMessage), Styles.togglet, () ->
                 Core.settings.put("adminbutton2.secrets.sendVia", sendVia = sendViaBuilding))
                 .update(b -> b.setChecked(sendVia == sendViaBuilding));
-        });
+        }).row();
+        cont.button("@adminbutton2.communication.sendSchematicFromClipboard", () -> {
+            Schematic schematic;
+            try {
+                schematic = Vars.schematics.readBase64(Core.app.getClipboardText());
+            } catch (Exception e) {
+                Vars.ui.showException(e);
+                return;
+            }
+            if (AdminVars.communication.selectedBuildingExists()) {
+                AdminVars.communication.sendSchematic(schematic);
+            } else {
+                AdminVars.communication.selectBuildingAndRun(() -> AdminVars.communication.sendSchematic(schematic));
+                Vars.ui.showInfo("@adminbutton2.communication.selectBuilding");
+            }
+        }).disabled(b -> Core.app.getClipboardText() == null || !Core.app.getClipboardText().startsWith(Vars.schematicBaseStart)).width(400f);
     }
 
     private void sendMessage(String message) {
@@ -72,7 +88,7 @@ public class SecretsDialog extends BaseDialog {
             if (AdminVars.communication.selectedBuildingExists()) {
                 AdminVars.communication.sendChatMessage(message);
             } else {
-                AdminVars.communication.selectBuildingAndSendMessage(message);
+                AdminVars.communication.selectBuildingAndRun(() -> AdminVars.communication.sendChatMessage(message));
                 Vars.ui.showInfo("@adminbutton2.communication.selectBuilding");
             }
         }
