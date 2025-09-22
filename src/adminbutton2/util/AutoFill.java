@@ -50,7 +50,7 @@ public class AutoFill {
                         if (selected.contains(b)) {
                             selected.remove(b);
                         } else {
-                            if (AdminVars.autofill.shouldFillBuilding(e.tile.build)) selected.add(b);
+                            if (AdminVars.autofill.shouldFillBuilding(e.tile.build, true)) selected.add(b);
                         }
                     }
                 }
@@ -69,9 +69,9 @@ public class AutoFill {
         }
     }
 
-    private boolean shouldFillBuilding(Building building) {
+    private boolean shouldFillBuilding(Building building, boolean select) {
         if (building.team != Vars.player.team()) return false;
-        if (!fillMap[building.block.id]) return false;
+        if (!fillMap[building.block.id] && !select) return false;
         return validBlock(building.block);
     }
 
@@ -98,7 +98,7 @@ public class AutoFill {
         if (!fillOnlySelectedBuildings) {
             Draw.color(colorNear);
             Vars.indexer.eachBlock(Vars.player.unit(), Vars.itemTransferRange, b -> {
-                return shouldFillBuilding(b) && !selected.contains(b);
+                return shouldFillBuilding(b, false) && !selected.contains(b);
             }, b -> {
                 Lines.square(b.x, b.y, b.block.size * Vars.tilesize / 1.5f, draw_rot);
             });
@@ -122,7 +122,7 @@ public class AutoFill {
         if ((target == null || target.amount < 5) && !fillOnlySelectedBuildings) {
             validCloseBuildings.clear();
             Vars.indexer.eachBlock(Vars.player.unit(), Vars.itemTransferRange, b -> {
-                return shouldFillBuilding(b);
+                return shouldFillBuilding(b, false);
             }, b -> {
                 validCloseBuildings.add(b);
             });
