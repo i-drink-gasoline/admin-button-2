@@ -71,14 +71,21 @@ public class SecretsDialog extends BaseDialog {
         }).disabled(b -> Core.app.getClipboardText() == null || !Core.app.getClipboardText().startsWith(Vars.schematicBaseStart)).width(400f);
     }
 
+    public String formatSecretMessage(String message) {
+        if (!AdminVars.secretMessageFormat.contains("{}")) {
+            AdminVars.secretMessageFormat = ("{}");
+            Core.settings.put("adminbutton2.secrets.format", AdminVars.secretMessageFormat);
+        }
+        return AdminVars.secretMessageFormat.replaceFirst("\\{\\}", message);
+    }
+
     private void sendMessage(String message) {
         if (sendVia == sendViaChat) {
             if (!chatWarningShown && !chatInterval.get(60f)) {
                 chatWarningShown = true;
                 Vars.ui.showInfo("@adminbutton2.secrets.chat_warning");
             }
-            if (!AdminVars.secretMessageFormat.contains("{}")) AdminVars.secretMessageFormat = ("{}");
-            String msg = AdminVars.secretMessageFormat.replaceFirst("\\{\\}", message);
+            String msg = formatSecretMessage(message);
             if (msg.length() > Vars.maxTextLength) {
                 Vars.ui.showErrorMessage("@adminbutton2.admindialog.message_above_limit");
                 return;

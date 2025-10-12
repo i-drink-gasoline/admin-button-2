@@ -70,6 +70,7 @@ public class Commands {
         handler.register("sc", "[message...]", "adminbutton2.command.sc.description", args -> {
             char icon = Core.settings.getString("adminbutton2-icon", String.valueOf(Iconc.admin)).charAt(0);
             String message = args.length == 0 ? Secret.generateRandomMessage(icon, Vars.maxTextLength) : Secret.generateSecretMessage(icon, args[0]);
+            message = AdminVars.secrets.formatSecretMessage(message);
             if (message.length() > Vars.maxTextLength) {
                 Vars.ui.chatfrag.addMessage("[scarlet]" + Core.bundle.get("adminbutton2.admindialog.message_above_limit"));
                 return;
