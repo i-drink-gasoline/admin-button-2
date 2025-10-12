@@ -62,8 +62,14 @@ public class AdminChatFragment extends ChatFragment {
             }
             String prefix = Core.settings.getString("adminbutton2.chat.messagePrefix", "");
             String postfix = Core.settings.getString("adminbutton2.chat.messagePostfix", "");
-            if (!message.startsWith("/") && !message.isEmpty() && !(message.startsWith(prefix) && message.endsWith(postfix))) {
-                String formattedMessage = prefix + message + postfix;
+            if (!(message.startsWith("/") && !(message.startsWith("/t ") || message.startsWith("/a "))) &&
+                !message.isEmpty() && !(message.startsWith(prefix) && message.endsWith(postfix))) {
+                String formattedMessage;
+                if (message.startsWith("/t ") || message.startsWith("/a ")) {
+                    formattedMessage = message.substring(0, 3) + prefix + message.substring(3) + postfix;
+                } else {
+                    formattedMessage = prefix + message + postfix;
+                }
                 if (formattedMessage.length() <= Vars.maxTextLength) {
                     chatfield.setText(formattedMessage);
                     message = formattedMessage;
