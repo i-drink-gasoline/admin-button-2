@@ -36,6 +36,7 @@ import adminbutton2.ui.PanelConfigDialog;
 import adminbutton2.ui.SecretsDialog;
 import adminbutton2.ui.WavesDialog;
 import adminbutton2.util.AutoFill;
+import adminbutton2.util.BlockReplacer;
 import adminbutton2.util.Commands;
 import adminbutton2.util.Communication;
 import adminbutton2.util.Interaction;
@@ -68,6 +69,7 @@ public class AdminVars extends Mod {
     public static Communication communication;
     public static PlanSaver planSaver;
     public static Interaction interaction;
+    public static BlockReplacer blockReplacer;
 
     public static boolean controllerEnabled = false;
 
@@ -79,6 +81,7 @@ public class AdminVars extends Mod {
         communication = new Communication();
         planSaver = new PlanSaver();
         interaction = new Interaction();
+        blockReplacer = new BlockReplacer();
 
         panel = new AdminPanel();
         admin = new AdminDialog();
@@ -90,6 +93,8 @@ public class AdminVars extends Mod {
         panelConfig = new PanelConfigDialog();
         autofillConfig = new AutoFillConfigDialog();
         chat = new ChatDialog();
+
+        blockReplacer.replaceBlocks();
         control.setController(control.controllers[0]);
         if (Core.settings.getBool("adminbutton2.settings.override_input_handler", true)) {
             Vars.control.input = Vars.mobile ? new ControllerMobileInput() : new ControllerDesktopInput();
@@ -165,6 +170,7 @@ public class AdminVars extends Mod {
             builder.checkPref("adminbutton2.settings.override_input_handler", true, v -> Vars.ui.showInfo("@setting.macnotch.description"));
             builder.checkPref("adminbutton2.settings.override_chatfrag", true, v -> Vars.ui.showInfo("@setting.macnotch.description"));
             builder.checkPref("adminbutton2.settings.plan_saver.enabled", false, v -> AdminVars.planSaver.enabled = v);
+            builder.checkPref("adminbutton2.settings.block_replacer.enabled", false, v -> Vars.ui.showInfo("@setting.macnotch.description"));
             if (Vars.mobile) builder.checkPref("adminbutton2.settings.pause_building_button", true, v -> Vars.ui.showInfo("@setting.macnotch.description"));
             builder.textPref("adminbutton2.commands.prefix", ".", v -> AdminVars.commands.handler.setPrefix(v));
             builder.sliderPref("adminbutton2.interaction.interaction_cooldown_milliseconds", 250, 0, 5000, 25, v -> {
