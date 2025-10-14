@@ -118,7 +118,7 @@ public class AdminVars extends Mod {
         Element cancel = table.getChildren().get(0);
         table.removeChild(cancel);
         table.row();
-        table.button("@adminbutton2.pause_building", Icon.pause, Styles.togglet, () -> Vars.control.input.isBuilding = !Vars.control.input.isBuilding).width(155f).height(50f).margin(12f).checked(!Vars.control.input.isBuilding);
+        table.button("@adminbutton2.pause_building", Icon.pause, Styles.togglet, () -> Vars.control.input.isBuilding = !Vars.control.input.isBuilding).width(155f).height(50f).margin(12f).checked(b -> !Vars.control.input.isBuilding);
         table.row();
         table.add(cancel).width(155f).height(50f).margin(12f);
     }
