@@ -86,6 +86,10 @@ public class Commands {
             }
         });
 
+        handler.register("sn", "<message...>", "adminbutton2.command.sn.description", args -> {
+            Call.sendChatMessage(args[0]);
+        });
+
         handler.register("smt", "adminbutton2.command.smt.description", args -> {
             smt = !smt;
             Vars.ui.chatfrag.addMessage("" + smt);
