@@ -170,7 +170,7 @@ public class AdminVars extends Mod {
             builder.checkPref("adminbutton2.settings.override_input_handler", true, v -> Vars.ui.showInfo("@setting.macnotch.description"));
             builder.checkPref("adminbutton2.settings.override_chatfrag", true, v -> Vars.ui.showInfo("@setting.macnotch.description"));
             builder.checkPref("adminbutton2.settings.plan_saver.enabled", false, v -> AdminVars.planSaver.enabled = v);
-            builder.checkPref("adminbutton2.settings.block_replacer.enabled", false, v -> Vars.ui.showInfo("@setting.macnotch.description"));
+            if (!Vars.android) builder.checkPref("adminbutton2.settings.block_replacer.enabled", false, v -> Vars.ui.showInfo("@setting.macnotch.description"));
             if (Vars.mobile) builder.checkPref("adminbutton2.settings.pause_building_button", true, v -> Vars.ui.showInfo("@setting.macnotch.description"));
             builder.textPref("adminbutton2.commands.prefix", ".", v -> AdminVars.commands.handler.setPrefix(v));
             builder.sliderPref("adminbutton2.interaction.interaction_cooldown_milliseconds", 250, 0, 5000, 25, v -> {

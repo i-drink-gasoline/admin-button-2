@@ -18,7 +18,7 @@ import java.lang.reflect.Modifier;
 
 public class BlockReplacer {
     public void replaceBlocks() {
-        if (!Core.settings.getBool("adminbutton2.settings.block_replacer.enabled", false)) return;
+        if (!Core.settings.getBool("adminbutton2.settings.block_replacer.enabled", false) || Vars.android) return;
         Class[] replaceClasses = {
             AB2Junction.class,
             AB2ItemBridge.class,
