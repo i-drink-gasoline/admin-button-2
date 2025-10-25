@@ -26,7 +26,8 @@ public class BlockReplacer {
         };
         Vars.content.getContentMap()[ContentType.block.ordinal()].each(b -> {
             for (Class c : replaceClasses) {
-                if (b.getClass().getSuperclass() == c.getSuperclass()) {
+                if (b.isModded()) continue;
+                if ((b.getClass().toString().indexOf('$') == -1 ? b.getClass() : b.getClass().getSuperclass()) == c.getSuperclass()) {
                     try {
                         Block newBlock = (Block)c.newInstance();
                         replace((Block)b, newBlock);
