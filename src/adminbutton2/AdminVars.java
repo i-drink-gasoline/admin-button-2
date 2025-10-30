@@ -40,7 +40,6 @@ import adminbutton2.util.BlockReplacer;
 import adminbutton2.util.Commands;
 import adminbutton2.util.Communication;
 import adminbutton2.util.Interaction;
-import adminbutton2.util.PlanSaver;
 
 public class AdminVars extends Mod {
     private static final String admin_locale = "admin-button-2";
@@ -65,7 +64,6 @@ public class AdminVars extends Mod {
     public static Commands commands;
     public static AutoFill autofill;
     public static Communication communication;
-    public static PlanSaver planSaver;
     public static Interaction interaction;
     public static BlockReplacer blockReplacer;
 
@@ -76,7 +74,6 @@ public class AdminVars extends Mod {
         commands = new Commands();
         autofill = new AutoFill();
         communication = new Communication();
-        planSaver = new PlanSaver();
         interaction = new Interaction();
         blockReplacer = new BlockReplacer();
 
@@ -166,7 +163,6 @@ public class AdminVars extends Mod {
             builder.pref(new CategorySetting("Admin Button 2"));
             builder.checkPref("adminbutton2.settings.override_input_handler", true, v -> Vars.ui.showInfo("@setting.macnotch.description"));
             builder.checkPref("adminbutton2.settings.override_chatfrag", true, v -> Vars.ui.showInfo("@setting.macnotch.description"));
-            builder.checkPref("adminbutton2.settings.plan_saver.enabled", false, v -> AdminVars.planSaver.enabled = v);
             if (!Vars.android) builder.checkPref("adminbutton2.settings.block_replacer.enabled", false, v -> Vars.ui.showInfo("@setting.macnotch.description"));
             if (Vars.mobile) builder.checkPref("adminbutton2.settings.pause_building_button", true, v -> Vars.ui.showInfo("@setting.macnotch.description"));
             builder.textPref("adminbutton2.commands.prefix", ".", v -> AdminVars.commands.handler.setPrefix(v));
