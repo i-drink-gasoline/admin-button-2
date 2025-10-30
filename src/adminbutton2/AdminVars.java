@@ -40,7 +40,6 @@ import adminbutton2.util.BlockReplacer;
 import adminbutton2.util.Commands;
 import adminbutton2.util.Communication;
 import adminbutton2.util.Interaction;
-import adminbutton2.util.OreIndexer;
 import adminbutton2.util.PlanSaver;
 
 public class AdminVars extends Mod {
@@ -63,7 +62,6 @@ public class AdminVars extends Mod {
 
     public static Controller controller;
 
-    public static OreIndexer oreIndexer;
     public static Commands commands;
     public static AutoFill autofill;
     public static Communication communication;
@@ -75,7 +73,6 @@ public class AdminVars extends Mod {
 
     @Override
     public void init() {
-        oreIndexer = new OreIndexer();
         commands = new Commands();
         autofill = new AutoFill();
         communication = new Communication();
