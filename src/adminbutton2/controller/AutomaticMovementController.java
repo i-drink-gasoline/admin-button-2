@@ -85,7 +85,7 @@ public class AutomaticMovementController extends Controller {
                 interval.getTimes()[findInterval] = 0;
             }
             if (interval.get(findInterval, 10 * 60)) {
-                Block targetBlock = drillables.min(i -> AdminVars.oreIndexer.hasOre(i.id) && Core.settings.getBool(mineSettingName(i.name), true), i -> core.items.get(i.itemDrop));
+                Block targetBlock = drillables.min(i -> AdminVars.oreIndexer.hasOre(i.id) && Core.settings.getBool(mineSettingName(i.name), true) && AdminVars.oreIndexer.findClosestOre(0, 0, i.id) != null, i -> core.items.get(i.itemDrop));
                 if (targetBlock == null) {
                     oreTile = null;
                     return;
@@ -95,12 +95,15 @@ public class AutomaticMovementController extends Controller {
                 if (sameDrop > 1) targetBlock = drillables.min(i -> i.itemDrop == targetItem, i -> AdminVars.oreIndexer.findClosestOreDistance(unit.x / Vars.tilesize, unit.y / Vars.tilesize, i.id));
                 oreTile = AdminVars.oreIndexer.findClosestOre(unit.x / Vars.tilesize, unit.y / Vars.tilesize, targetBlock.id);
             }
-            if (targetItem == null ||  oreTile == null) return;
+            if ((targetItem == null || oreTile == null) || unit.getMineResult(oreTile) == null) {
+                interval.getTimes()[findInterval] = 0;
+                return;
+            }
             here: if ((unit.stack.item != targetItem || unit.stack.amount >= unit.type.itemCapacity) && unit.stack.amount > 0) {
-                if (!unit.within(core, Vars.itemTransferRange - 20)) {
+                if (!unit.within(core, Vars.itemTransferRange)) {
                     approach(core, Vars.itemTransferRange - 40);
                 } else {
-                    if (unit.stack.item != targetItem && oreTile.within(core, Vars.itemTransferRange + unit.type.mineRange - 10)) break here;
+                    if (unit.stack.item != targetItem && oreTile.within(core, Vars.itemTransferRange + unit.type.mineRange - 1)) break here;
                     if (core.acceptStack(unit.stack.item, unit.stack.amount, unit) > 0) {
                         if (!interval.get(dropInterval, 60)) return;
                         Call.transferInventory(Vars.player, core);
