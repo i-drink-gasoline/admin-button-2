@@ -121,7 +121,7 @@ public class Commands {
                 AdminVars.interaction.interactor = interactor;
                 int newLinks = 0;
                 for (PowerNode.PowerNodeBuild node : nodes) {
-                    if (node.tile().build != node) continue;
+                    if (node.tile.build != node) continue;
                     Seq<Point2> points = new Seq<>();
                     node.power.links.each(l -> {
                         points.add(Point2.unpack(l).sub(node.tile.x, node.tile.y));

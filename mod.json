@@ -5,7 +5,7 @@
     "main": "adminbutton2.AdminVars",
     "description": "Add an admin button.",
     "version": 20,
-    "minGameVersion": 146,
+    "minGameVersion": 149,
     "java": true,
     "hidden": true,
     "repo": "i-drink-gasoline/admin-button-2"

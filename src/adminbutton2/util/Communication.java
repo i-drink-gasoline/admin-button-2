@@ -75,7 +75,7 @@ public class Communication {
     }
 
     public boolean selectedBuildingExists() {
-        return selectedBuilding != null && selectedBuilding.tile().build == selectedBuilding;
+        return selectedBuilding != null && selectedBuilding.tile.build == selectedBuilding;
     }
 
     public void selectBuildingAndRun(Runnable runnable) {
@@ -143,7 +143,7 @@ public class Communication {
         if (selectedBuilding == null || !selectedBuilding.interactable(Vars.player.team())) return;
         byte[] deflated = deflate(data);
         if (selectedBuilding.block instanceof MessageBlock) {
-            if (!((MessageBlock)selectedBuilding.block()).accessible()) return;
+            if (!((MessageBlock)selectedBuilding.block).accessible()) return;
             String msg = messageMagic + messageBase.encode(deflated);
             if (msg.length() <= ((MessageBlock)selectedBuilding.block).maxTextLength) {
                 selectedBuilding.configure(msg);
@@ -151,7 +151,7 @@ public class Communication {
                 Vars.ui.chatfrag.addMessage(AdminVars.chatNotificationPrefix + "[scarlet]" + Core.bundle.get("adminbutton2.admindialog.message_above_limit"));
             }
         } else if (selectedBuilding.block instanceof LogicBlock) {
-            if (!((LogicBlock)selectedBuilding.block()).accessible()) return;
+            if (!((LogicBlock)selectedBuilding.block).accessible()) return;
             String msg = logicMagicStart + logicBase.encode(deflated) + logicMagicEnd;
             byte[] bytes = LogicBlock.compress(msg, new Seq<>());
             if (bytes.length - Integer.BYTES <= Short.MAX_VALUE / 2) {;

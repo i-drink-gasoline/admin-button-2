@@ -33,7 +33,7 @@ public class ControllerDesktopInput extends DesktopInput {
             if (!panning) {
                 if (!Core.scene.hasField()) {
                     float speed = (!Core.input.keyDown(Binding.boost) ? panSpeed : panBoostSpeed) * Time.delta;
-                    cam.add(Tmp.v1.set(Core.input.axis(Binding.move_x), Core.input.axis(Binding.move_y)).nor().scl(speed));
+                    cam.add(Tmp.v1.set(Core.input.axis(Binding.moveX), Core.input.axis(Binding.moveY)).nor().scl(speed));
                 }
                 Core.camera.position.set(cam);
             }

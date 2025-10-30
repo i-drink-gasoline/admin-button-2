@@ -17,7 +17,7 @@ public class AB2BufferedItemBridge extends BufferedItemBridge {
 
     @Override
     public void handlePlacementLine(Seq<BuildPlan> plans) {
-        boolean diagonal = Core.input.keyDown(Binding.diagonal_placement);
+        boolean diagonal = Core.input.keyDown(Binding.diagonalPlacement);
         if (Vars.mobile && Core.settings.getBool("swapdiagonal")) diagonal = !diagonal;
         if (!diagonal) {
             super.handlePlacementLine(plans);
@@ -43,7 +43,7 @@ public class AB2BufferedItemBridge extends BufferedItemBridge {
 
     @Override
     public void changePlacementPath(Seq<Point2> points, int rotation) {
-        boolean diagonal = Core.input.keyDown(Binding.diagonal_placement);
+        boolean diagonal = Core.input.keyDown(Binding.diagonalPlacement);
         if (Vars.mobile && Core.settings.getBool("swapdiagonal")) diagonal = !diagonal;
         if (!diagonal) {
             super.changePlacementPath(points, rotation);
