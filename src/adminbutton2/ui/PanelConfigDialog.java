@@ -18,6 +18,7 @@ public class PanelConfigDialog extends BaseDialog {
         addCloseButton();
         cont.pane(table);
         buttons.button("@add", Icon.add, this::addButton);
+        buttons.button("@settings.reset", Icon.trash, this::resetButtons);
         rebuild();
     }
 
@@ -85,5 +86,12 @@ public class PanelConfigDialog extends BaseDialog {
         AdminVars.panel.rebuild();
         rebuild();
         AdminVars.panel.saveButtons();
+    }
+
+    private void resetButtons() {
+        Core.settings.remove("adminbutton2.adminpanel.activeButtons");
+        Core.settings.remove("adminbutton2.adminpanel.button_size");
+        AdminVars.panel.loadButtons();
+        buttonsUpdated();
     }
 }
