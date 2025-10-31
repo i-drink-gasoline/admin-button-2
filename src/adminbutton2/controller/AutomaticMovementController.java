@@ -11,6 +11,7 @@ import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.gen.Call;
 import mindustry.gen.Unit;
+import mindustry.input.MobileInput;
 import mindustry.type.Item;
 import mindustry.ui.Styles;
 import mindustry.world.Tile;
@@ -42,7 +43,7 @@ public class AutomaticMovementController extends Controller {
         boolean boosted = (unit instanceof mindustry.gen.Mechc && unit.isFlying());
         if (!unit.plans.isEmpty() && Vars.control.input.isBuilding) {
             approach(unit.plans.first(), unit.type.buildRange / 1.5f);
-        } else if (Vars.player.shooting) {
+        } else if (Vars.player.shooting && !(Vars.control.input instanceof MobileInput)) {
             approach(Core.input.mouseWorld(), unit.range());
             unit.controlWeapons(true, Vars.player.shooting && !boosted);
         } else if (unit.canMine() && mine) {
