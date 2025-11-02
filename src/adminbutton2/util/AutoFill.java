@@ -21,6 +21,8 @@ import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
+import mindustry.world.blocks.storage.CoreBlock;
+import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.consumers.Consume;
 import mindustry.world.consumers.ConsumeItemDynamic;
 import mindustry.world.consumers.ConsumeItemExplode;
@@ -36,10 +38,12 @@ public class AutoFill {
     public int coreMinimumRequestAmount;
     public boolean[] fillMap;
     static Seq<Building> selected = new Seq<>();
-    public Color colorSelected = Pal.accent.cpy().a(0.75f).premultiplyAlpha(), colorSelectedNear = Pal.accent.cpy().a(0.75f), colorNear = Pal.plastanium.cpy().a(0.75f), colorCore = Pal.reactorPurple2.cpy().a(0.75f);
+    public Color colorSelected = Pal.accent.cpy().a(0.75f).premultiplyAlpha(), colorSelectedNear = Pal.accent.cpy().a(0.75f), colorNear = Pal.plastanium.cpy().a(0.75f), colorCore = Pal.reactorPurple2.cpy().a(0.75f), colorStorage = Pal.techBlue.cpy().a(0.75f);
     Seq<Building> validCloseBuildings = new Seq<>();
     Building core;
     Unit unit;
+    Seq<Building> coreBuildings = new Seq<>();
+    Seq<Building> storageBuildings = new Seq<>();
 
     static {
         Events.on(EventType.TapEvent.class, e -> {
@@ -97,17 +101,21 @@ public class AutoFill {
         });
         if (!fillOnlySelectedBuildings) {
             Draw.color(colorNear);
-            Vars.indexer.eachBlock(Vars.player.unit(), Vars.itemTransferRange, b -> {
+            Vars.indexer.eachBlock(unit, Vars.itemTransferRange, b -> {
                 return shouldFillBuilding(b, false) && !selected.contains(b);
             }, b -> {
                 Lines.square(b.x, b.y, b.block.size * Vars.tilesize / 1.5f, draw_rot);
             });
         }
-        core = Vars.player.unit().closestCore();
+        Draw.color(colorCore);
+        core = getClosestCore();
         if (core != null && Vars.player.within(core, Vars.itemTransferRange)) {
             Draw.color(colorCore);
             Lines.square(core.x, core.y, core.block.size * Vars.tilesize / 1.5f, draw_rot);
         }
+        Draw.color(colorStorage);
+        getStorageBuildings();
+        storageBuildings.each(b -> Lines.square(b.x, b.y, b.block.size * Vars.tilesize / 1.5f, draw_rot));
         Draw.reset();
     }
 
@@ -117,11 +125,12 @@ public class AutoFill {
         if (Vars.state.rules.onlyDepositCore) return;
         if (!AdminVars.interaction.willInteract()) return;
         unit = Vars.player.unit();
-        core = unit.closestCore();
+        core = getClosestCore();
+        getStorageBuildings();
         Target target = getBestTarget(selected);
         if ((target == null || target.amount < 5) && !fillOnlySelectedBuildings) {
             validCloseBuildings.clear();
-            Vars.indexer.eachBlock(Vars.player.unit(), Vars.itemTransferRange, b -> {
+            Vars.indexer.eachBlock(unit, Vars.itemTransferRange, b -> {
                 return shouldFillBuilding(b, false);
             }, b -> {
                 validCloseBuildings.add(b);
@@ -134,14 +143,37 @@ public class AutoFill {
                 Call.transferInventory(Vars.player, target.building);
             }
         } else {
-            if (unit.within(core, Vars.itemTransferRange)) {
+            if (core != null && unit.within(core, Vars.itemTransferRange)) {
                 if (unit.stack.amount == 0) {
-                    Call.requestItem(Vars.player, core, target.item, Vars.player.unit().maxAccepted(target.item));
-                } else {
+                    if (core.items.has(target.item, coreMinimumRequestAmount)) {
+                        Call.requestItem(Vars.player, core, target.item, unit.maxAccepted(target.item));
+                        return;
+                    }
+                } else if (core.acceptStack(unit.stack.item, unit.stack.amount, unit) == unit.stack.amount && !(coreIncinerates(core) && !unit.stack.item.buildable)) {
                     Call.transferInventory(Vars.player, core);
+                    return;
                 }
             }
+            for (Building storage : storageBuildings) {
+                if (unit.stack.amount == 0) {
+                    if (storage.items.has(target.item, 1)) {
+                        Call.requestItem(Vars.player, storage, target.item, unit.maxAccepted(target.item));
+                        return;
+                    }
+                } else if (storage.acceptStack(unit.stack.item, unit.stack.amount, unit) == unit.stack.amount) {
+                    Call.transferInventory(Vars.player, storage);
+                    return;
+                }
+            }
+            if (unit.stack.item != target.item && unit.stack.amount != 0) {
+                Call.dropItem(0);
+            }
         }
+    }
+
+    private boolean coreIncinerates(Building b) {
+        if (b.block instanceof CoreBlock) return (((CoreBlock)b.block).incinerateNonBuildable);
+        return false;
     }
 
     private boolean itemTransferPossible(Building b, Item i) {
@@ -152,6 +184,9 @@ public class AutoFill {
         }
         if (core == null || !core.items.has(i, coreMinimumRequestAmount) || !unit.within(core, Vars.itemTransferRange)) {
             if (unit.stack.item == i && unit.stack.amount > 0) return true;
+            for (Building storage : storageBuildings) {
+                if (storage.items.has(i, 1)) return true;
+            }
             return false;
         }
         return true;
@@ -201,7 +236,7 @@ public class AutoFill {
         Item biggestItem = null;
         for (Item item : items) {
             if (!itemTransferPossible(b, item)) continue;
-            int thisFill = b.acceptStack(item, Integer.MAX_VALUE, Vars.player.unit());
+            int thisFill = b.acceptStack(item, Integer.MAX_VALUE, unit);
             if (thisFill > biggestFill) {
                 biggestFill = thisFill;
                 biggestItem = item;
@@ -230,9 +265,9 @@ public class AutoFill {
         for (Building b : buildings) {
             Item thisItem = getNeededItem(b);
             if (thisItem != null) {
-                int thisFill = b.acceptStack(thisItem, Integer.MAX_VALUE, Vars.player.unit());
+                int thisFill = b.acceptStack(thisItem, Integer.MAX_VALUE, unit);
                 here: if (!isBiggestFillInUnit && thisItem == unit.stack.item && unit.stack.amount > 0) {
-                    if (b.acceptStack(thisItem, Integer.MAX_VALUE, Vars.player.unit()) < 5) break here;
+                    if (b.acceptStack(thisItem, Integer.MAX_VALUE, unit) < 5) break here;
                     item = thisItem;
                     biggestFill = 0;
                     isBiggestFillInUnit = true;
@@ -247,6 +282,29 @@ public class AutoFill {
         }
         if (biggestFill < 1) return null;
         return new Target(building, item, biggestFill);
+    }
+
+    private Building getClosestCore() {
+        coreBuildings.clear();
+        Vars.indexer.eachBlock(unit, Vars.itemTransferRange, b -> {
+            return b.block instanceof CoreBlock || b.block instanceof StorageBlock && ((StorageBlock.StorageBuild)b).linkedCore != null;
+        }, b -> {
+            coreBuildings.add(b);
+        });
+        if (coreBuildings.contains(b -> !coreIncinerates(b))) {
+            coreBuildings.retainAll(b -> !coreIncinerates(b));
+        }
+        return coreBuildings.min(b -> b.dst(unit));
+    }
+
+    private void getStorageBuildings() {
+        storageBuildings.clear();
+        Vars.indexer.eachBlock(unit, Vars.itemTransferRange, b -> {
+            if (b.block instanceof CoreBlock) return false;
+            return b.block instanceof StorageBlock && ((StorageBlock.StorageBuild)b).linkedCore == null;
+        }, b -> {
+            storageBuildings.add(b);
+        });
     }
 
     private class Target {
