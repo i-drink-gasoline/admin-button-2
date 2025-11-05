@@ -55,16 +55,11 @@ public class AutomaticMovementController extends Controller {
             }
             if (interval.get(findInterval, 10 * 60)) {
                 targetItem = Vars.content.items().min(i -> ((unit.type.mineFloor && Vars.indexer.hasOre(i)) || (unit.type.mineWalls && Vars.indexer.hasWallOre(i))) && unit.canMine(i) && Core.settings.getBool(mineSettingName(i.name), true), i -> core.items.get(i));
-                if (targetItem == null) {
-                arc.util.Log.info("targetItem is null");
-                    return;
-                }
-                arc.util.Log.info("targetItem is  not null");
+                if (targetItem == null) return;
                 if (unit.type.mineFloor) ore = Vars.indexer.findClosestOre(unit.x, unit.y, targetItem);
-                if (ore == null && unit.type.mineWalls) Vars.indexer.findClosestWallOre(unit.x, unit.y, targetItem);
+                if (ore == null && unit.type.mineWalls) ore = Vars.indexer.findClosestWallOre(unit.x, unit.y, targetItem);
             }
             if (ore == null || unit.getMineResult(ore) == null) {
-                arc.util.Log.info("ore is null");
                 interval.getTimes()[findInterval] = Time.time + 20;
                 return;
             }
