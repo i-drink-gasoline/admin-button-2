@@ -13,7 +13,7 @@ public class Interaction {
     private Interval interval = new Interval();
     public boolean interacting = false;
     public String interactor = "";
-    public float interactionCooldown = (float)Core.settings.getInt("adminbutton2.interaction_queue.interaction_cooldown_milliseconds", 250) / 1000f;
+    public float interactionCooldown = (float)Core.settings.getInt("adminbutton2.interaction.interaction_cooldown_milliseconds", 250) / 1000f;
 
     public boolean willInteract() {
         return interacting == false && interval.get(0, 60f * interactionCooldown);
