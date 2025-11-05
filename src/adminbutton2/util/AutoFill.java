@@ -90,7 +90,7 @@ public class AutoFill {
     }
 
     public void draw() {
-        if (!enabled || Vars.state.rules.onlyDepositCore) return;
+        if (!enabled || Vars.state.rules.onlyDepositCore || unit == null) return;
         float draw_rot = Time.time;
         Draw.z(Layer.effect);
         selected.each(b -> {
@@ -120,11 +120,11 @@ public class AutoFill {
     }
 
     public void update() {
-        if (!enabled || AdminVars.interaction.interacting) return;
+        unit = Vars.player.unit();
+        if (!enabled || AdminVars.interaction.interacting || unit == null) return;
         selected.removeAll(b -> b.tile.build != b);
         if (Vars.state.rules.onlyDepositCore) return;
         if (!AdminVars.interaction.willInteract()) return;
-        unit = Vars.player.unit();
         core = getClosestCore();
         getStorageBuildings();
         Target target = getBestTarget(selected);
