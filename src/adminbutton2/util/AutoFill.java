@@ -35,7 +35,7 @@ public class AutoFill {
     public boolean selectBuildings = false;
     public boolean enabled = false;
     public boolean fillOnlySelectedBuildings = false;
-    public int coreMinimumRequestAmount;
+    public int coreMinimumRequestAmount = Core.settings.getInt("adminbutton2.autofill.core_minimum_request_amount", 30);
     public boolean[] fillMap;
     static Seq<Building> selected = new Seq<>();
     public Color colorSelected = Pal.accent.cpy().a(0.75f).premultiplyAlpha(), colorSelectedNear = Pal.accent.cpy().a(0.75f), colorNear = Pal.plastanium.cpy().a(0.75f), colorCore = Pal.reactorPurple2.cpy().a(0.75f), colorStorage = Pal.techBlue.cpy().a(0.75f);
