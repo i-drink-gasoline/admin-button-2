@@ -40,6 +40,7 @@ import adminbutton2.util.BlockReplacer;
 import adminbutton2.util.Commands;
 import adminbutton2.util.Communication;
 import adminbutton2.util.Interaction;
+import adminbutton2.util.KeyBindings;
 
 public class AdminVars extends Mod {
     private static final String admin_locale = "admin-button-2";
@@ -66,6 +67,7 @@ public class AdminVars extends Mod {
     public static Communication communication;
     public static Interaction interaction;
     public static BlockReplacer blockReplacer;
+    public static KeyBindings keys;
 
     public static boolean controllerEnabled = false;
 
@@ -76,6 +78,7 @@ public class AdminVars extends Mod {
         communication = new Communication();
         interaction = new Interaction();
         blockReplacer = new BlockReplacer();
+        keys = new KeyBindings();
 
         panel = new AdminPanel();
         admin = new AdminDialog();

@@ -3,6 +3,7 @@ package adminbutton2.input;
 
 import arc.Core;
 import arc.input.KeyCode;
+import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -17,9 +18,13 @@ public class ControllerDesktopInput extends DesktopInput {
     private boolean panSpeedChanged = false;
     private float panSpeedSaved, panBoostSpeedSaved;
     private Vec2 cam = new Vec2();
+    private boolean staticCamera = false;
 
     @Override
     public void update() {
+        if (!Core.scene.hasField()) {
+            if (Core.input.keyTap(AdminVars.keys.staticCamera)) staticCamera = !staticCamera;
+        }
         if (Core.input.keyDown(KeyCode.altLeft)) {
             panSpeedSaved = panSpeed;
             panBoostSpeedSaved = panBoostSpeed;
@@ -27,9 +32,9 @@ public class ControllerDesktopInput extends DesktopInput {
             panBoostSpeed = panSpeed;
             panSpeedChanged = true;
         }
-        if (AdminVars.controllerEnabled) {
-            cam.set(Core.camera.position);
-            super.update();
+        cam.set(Core.camera.position);
+        super.update();
+        if (AdminVars.controllerEnabled && !staticCamera) {
             if (!panning) {
                 if (!Core.scene.hasField()) {
                     float speed = (!Core.input.keyDown(Binding.boost) ? panSpeed : panBoostSpeed) * Time.delta;
@@ -37,7 +42,15 @@ public class ControllerDesktopInput extends DesktopInput {
                 }
                 Core.camera.position.set(cam);
             }
-        } else super.update();
+        }
+        if (staticCamera) {
+            if(Core.input.keyDown(Binding.pan)) {
+                float camSpeed = (!Core.input.keyDown(Binding.boost) ? panSpeed : panBoostSpeed) * Time.delta;
+                cam.x += Mathf.clamp((Core.input.mouseX() - Core.graphics.getWidth() / 2f) * panScale, -1, 1) * camSpeed;
+                cam.y += Mathf.clamp((Core.input.mouseY() - Core.graphics.getHeight() / 2f) * panScale, -1, 1) * camSpeed;
+            }
+            Core.camera.position.set(cam);
+        }
         if (panSpeedChanged) {
             panSpeed = panSpeedSaved; panBoostSpeed = panBoostSpeedSaved;
             panSpeedChanged = false;
