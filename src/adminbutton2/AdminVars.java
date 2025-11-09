@@ -17,6 +17,7 @@ import mindustry.game.EventType;
 import mindustry.gen.Icon;
 import mindustry.gen.Iconc;
 import mindustry.graphics.Pal;
+import mindustry.input.MobileInput;
 import mindustry.mod.Mod;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.SettingsMenuDialog;
@@ -106,18 +107,26 @@ public class AdminVars extends Mod {
         }
         addLanguageOption();
         loadLanguage();
-        if (Vars.mobile && Core.settings.getBool("adminbutton2.settings.pause_building_button", true)) Events.run(EventType.ClientLoadEvent.class, () -> Timer.schedule(() -> addPauseBuildingButton(), 4));
+        if (Vars.control.input instanceof MobileInput && Core.settings.getBool("adminbutton2.settings.pause_building_button", true)) Events.run(EventType.ClientLoadEvent.class, () -> Timer.schedule(() -> addPauseBuildingButton(), 4));
         addSettingsCategory();
     }
 
     private static void addPauseBuildingButton() {
-        Table table = (Table) Vars.control.input.uiGroup.getChildren().get(0);
-        Element cancel = table.getChildren().get(0);
-        table.removeChild(cancel);
-        table.row();
-        table.button("@adminbutton2.pause_building", Icon.pause, Styles.togglet, () -> Vars.control.input.isBuilding = !Vars.control.input.isBuilding).width(155f).height(50f).margin(12f).checked(b -> !Vars.control.input.isBuilding);
-        table.row();
-        table.add(cancel).width(155f).height(50f).margin(12f);
+        try {
+            Table table = (Table) Vars.control.input.uiGroup.getChildren().get(0);
+            Element cancel = table.getChildren().get(0);
+            table.removeChild(cancel);
+            table.row();
+            table.button("@adminbutton2.pause_building", Icon.pause, Styles.clearTogglet, () -> Vars.control.input.isBuilding = !Vars.control.input.isBuilding).width(155f).height(50f).margin(12f).checked(b -> !Vars.control.input.isBuilding);
+            table.row();
+            table.add(cancel).width(155f).height(50f).margin(12f);
+
+            Table commandTable = (Table) Vars.control.input.uiGroup.getChildren().get(1);
+            commandTable.getChildren().get(2).remove();
+            commandTable.spacerY(() -> ((MobileInput)Vars.control.input).showCancel() ? 100f : 0f).row();
+        } catch (Exception e) {
+            Vars.ui.showException(e);
+        }
     }
 
     @SuppressWarnings("unchecked")
