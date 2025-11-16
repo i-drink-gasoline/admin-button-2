@@ -156,7 +156,7 @@ public class AutoFill {
             }
             for (Building storage : storageBuildings) {
                 if (unit.stack.amount == 0) {
-                    if (storage.items.has(target.item, 1)) {
+                    if (storage.items.has(target.item, 20)) {
                         Call.requestItem(Vars.player, storage, target.item, unit.maxAccepted(target.item));
                         return;
                     }
@@ -185,7 +185,7 @@ public class AutoFill {
         if (core == null || !core.items.has(i, coreMinimumRequestAmount) || !unit.within(core, Vars.itemTransferRange)) {
             if (unit.stack.item == i && unit.stack.amount > 0) return true;
             for (Building storage : storageBuildings) {
-                if (storage.items.has(i, 1)) return true;
+                if (storage.items.has(i, 20)) return true;
             }
             return false;
         }
