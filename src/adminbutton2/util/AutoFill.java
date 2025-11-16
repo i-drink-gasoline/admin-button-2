@@ -6,10 +6,12 @@ import arc.Events;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
+import arc.math.geom.Rect;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Time;
 import mindustry.Vars;
+import mindustry.core.World;
 import mindustry.entities.bullet.BulletType;
 import mindustry.game.EventType;
 import mindustry.gen.Building;
@@ -31,6 +33,8 @@ import mindustry.world.consumers.ConsumeItems;
 
 import adminbutton2.AdminVars;
 
+import java.lang.reflect.Method;
+
 public class AutoFill {
     public boolean selectBuildings = false;
     public boolean enabled = false;
@@ -39,11 +43,15 @@ public class AutoFill {
     public boolean[] fillMap;
     static Seq<Building> selected = new Seq<>();
     public Color colorSelected = Pal.accent.cpy().a(0.75f).premultiplyAlpha(), colorSelectedNear = Pal.accent.cpy().a(0.75f), colorNear = Pal.plastanium.cpy().a(0.75f), colorCore = Pal.reactorPurple2.cpy().a(0.75f), colorStorage = Pal.techBlue.cpy().a(0.75f);
+    public Color selectionColor = Pal.reactorPurple2.cpy(), selectionBackColor = selectionColor.cpy().mul(0.75f);
     Seq<Building> validCloseBuildings = new Seq<>();
     Building core;
     Unit unit;
     Seq<Building> coreBuildings = new Seq<>();
     Seq<Building> storageBuildings = new Seq<>();
+    int selectX = -1, selectY = -1;
+    Method drawSelection;
+    boolean selectionExists = false;
 
     static {
         Events.on(EventType.TapEvent.class, e -> {
@@ -71,6 +79,14 @@ public class AutoFill {
         for (int i = 0; i < blocks.size; i++) {
             fillMap[i] = Core.settings.getBool("adminbutton2.autofill.fill." + blocks.get(i).name, true);
         }
+        try {
+            drawSelection = mindustry.input.InputHandler.class.getDeclaredMethod("drawSelection", int.class, int.class, int.class, int.class, int.class, Color.class, Color.class, boolean.class);
+            drawSelection.setAccessible(true);
+            selectionExists = true;
+        } catch (NoSuchMethodException e) {
+            Vars.ui.showException(e);
+            return;
+        }
     }
 
     private boolean shouldFillBuilding(Building building, boolean select) {
@@ -91,6 +107,16 @@ public class AutoFill {
 
     public void draw() {
         if (!enabled || Vars.state.rules.onlyDepositCore || unit == null) return;
+        if (selectionExists && Core.input.keyDown(AdminVars.keys.selectForAutoFill) && selectX != -1 && selectY != -1) {
+            Draw.z(Layer.effect);
+            try {
+                drawSelection.invoke(Vars.control.input, selectX, selectY, World.toTile(Core.input.mouseWorldX()), World.toTile(Core.input.mouseWorldY()), 128, selectionBackColor, selectionColor, false);
+            } catch (Exception e) {
+                selectionExists = false;
+                Vars.ui.showException(e);
+            }
+            Draw.reset();
+        }
         float draw_rot = Time.time;
         Draw.z(Layer.effect);
         selected.each(b -> {
@@ -124,6 +150,30 @@ public class AutoFill {
         if (!enabled || AdminVars.interaction.interacting || unit == null) return;
         selected.removeAll(b -> b.tile.build != b);
         if (Vars.state.rules.onlyDepositCore) return;
+        if (Core.input.keyTap(AdminVars.keys.selectForAutoFill) && !Core.scene.hasKeyboard()) {
+            selectX = World.toTile(Core.input.mouseWorldX());
+            selectY = World.toTile(Core.input.mouseWorldY());
+        }
+        if (Core.input.keyRelease(AdminVars.keys.selectForAutoFill) && !Core.scene.hasKeyboard()) {
+            int x1 = selectX, y1 = selectY, x2 = World.toTile(Core.input.mouseWorldX()), y2 = World.toTile(Core.input.mouseWorldY());
+            if (x1 > x2) {
+                int a = x1;
+                x1 = x2; x2 = a;
+            }
+            if (y1 > y2) {
+                int a = y1;
+                y1 = y2; y2 = a;
+            }
+            x2 = x2 - x1; y2 = y2 - y1;
+            unit.team.data().buildingTree.intersect(x1 * Vars.tilesize, y1 * Vars.tilesize, x2 * Vars.tilesize, y2 * Vars.tilesize, b -> {
+                if (selected.contains(b)) {
+                    selected.remove(b);
+                } else {
+                    if (AdminVars.autofill.shouldFillBuilding(b, true)) selected.add(b);
+                }
+            });
+            selectX = -1; selectY = -1;
+        }
         if (!AdminVars.interaction.willInteract()) return;
         core = getClosestCore();
         getStorageBuildings();
