@@ -53,6 +53,7 @@ public class AdminPanel {
         addButton("@rules.waves", Icon.waves, () -> AdminVars.waves.show());
         addButton("@adminbutton2.panelconfig.title", Icon.wrench, () -> AdminVars.panelConfig.show());
         addButton("@adminbutton2.autofill_config.title", Icon.box, () -> AdminVars.autofillConfig.show());
+        addButton("@adminbutton2.consoledialog.title", Icon.terminal, () -> AdminVars.console.show());
 
         addButton("@adminbutton2.controller.enable_controller", Icon.logic, () -> AdminVars.controllerEnabled = !AdminVars.controllerEnabled, b -> AdminVars.controllerEnabled);
         addButton("@adminbutton2.autofill.enabled", Icon.box, () -> AdminVars.autofill.enabled = !AdminVars.autofill.enabled, b -> AdminVars.autofill.enabled);
