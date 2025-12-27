@@ -44,7 +44,7 @@ public class ControllerDesktopInput extends DesktopInput {
             }
         }
         if (staticCamera) {
-            if(Core.input.keyDown(Binding.pan)) {
+            if(Core.input.keyDown(Binding.pan) && !Core.scene.hasField()) {
                 float camSpeed = (!Core.input.keyDown(Binding.boost) ? panSpeed : panBoostSpeed) * Time.delta;
                 cam.x += Mathf.clamp((Core.input.mouseX() - Core.graphics.getWidth() / 2f) * panScale, -1, 1) * camSpeed;
                 cam.y += Mathf.clamp((Core.input.mouseY() - Core.graphics.getHeight() / 2f) * panScale, -1, 1) * camSpeed;
