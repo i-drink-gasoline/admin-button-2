@@ -75,7 +75,7 @@ public class Communication {
     }
 
     public boolean selectedBuildingExists() {
-        return selectedBuilding != null && selectedBuilding.tile.build == selectedBuilding;
+        return selectedBuilding != null && selectedBuilding.tile.build == selectedBuilding && selectedBuilding.team == Vars.player.team();
     }
 
     public void selectBuildingAndRun(Runnable runnable) {
