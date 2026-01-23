@@ -56,6 +56,7 @@ public class AutomaticMovementController extends Controller {
             if (interval.get(findInterval, 10 * 60)) {
                 targetItem = Vars.content.items().min(i -> ((unit.type.mineFloor && Vars.indexer.hasOre(i)) || (unit.type.mineWalls && Vars.indexer.hasWallOre(i))) && unit.canMine(i) && Core.settings.getBool(mineSettingName(i.name), true), i -> core.items.get(i));
                 if (targetItem == null) return;
+                ore = null;
                 if (unit.type.mineFloor) ore = Vars.indexer.findClosestOre(unit.x, unit.y, targetItem);
                 if (ore == null && unit.type.mineWalls) ore = Vars.indexer.findClosestWallOre(unit.x, unit.y, targetItem);
             }
