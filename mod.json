@@ -4,7 +4,7 @@
     "author": "I drink gasoline",
     "main": "adminbutton2.AdminVars",
     "description": "Add an admin button.",
-    "version": 24,
+    "version": 24.1,
     "minGameVersion": 154,
     "java": true,
     "hidden": true,
