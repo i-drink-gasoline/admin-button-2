@@ -66,10 +66,12 @@ public class AdminPanel {
     }
 
     private void setTablePosition(float x, float y) {
+        float xoffset = Core.scene.marginLeft + Core.scene.marginRight;
+        float yoffset = Core.scene.marginBottom + Core.scene.marginTop;
         if (x - table.getPrefWidth()/2 < 100) x = table.getPrefWidth()/2;
-        if (x + table.getPrefWidth()/2 > Core.graphics.getWidth() - 100) x = Core.graphics.getWidth() - table.getPrefWidth()/2;
+        if (x + table.getPrefWidth()/2 > Core.graphics.getWidth() - 100 - xoffset) x = Core.graphics.getWidth() - table.getPrefWidth()/2 - xoffset;
         if (y - table.getPrefHeight()/2 < 0) y = table.getPrefHeight()/2;
-        if (y + table.getPrefHeight()/2 > Core.graphics.getHeight()) y = Core.graphics.getHeight() - table.getPrefHeight()/2;
+        if (y + table.getPrefHeight()/2 > Core.graphics.getHeight() - yoffset) y = Core.graphics.getHeight() - table.getPrefHeight()/2 - yoffset;
         table.setPosition(x, y);
     }
 
