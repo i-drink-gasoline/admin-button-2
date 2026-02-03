@@ -3,6 +3,7 @@ package adminbutton2.util;
 
 import arc.Core;
 import arc.func.Cons;
+import arc.graphics.Color;
 import arc.math.Mathf;
 import arc.math.geom.Point2;
 import arc.scene.ui.layout.Table;
@@ -165,6 +166,27 @@ public class Commands {
             }, "[AB2] command linknodes");
             thread.setDaemon(true);
             thread.start();
+        });
+
+        handler.register("rainbow", "<message...>", "adminbutton2.command.rainbow.description", args -> {
+            String out = "";
+            Color color = new Color();
+            int hue = 0;
+            int length = args[0].length();
+            int colors = (length > Vars.maxTextLength / 10) ? (Vars.maxTextLength - length) / 9 : length;
+            float nextColor = 0;
+            for (int i = 0; i < length; i++) {
+                char c = args[0].charAt(i);
+                if (i >= nextColor) {
+                    nextColor += length / (float) colors;
+                    color.fromHsv(hue, 1, 1);
+                    out += "[#" + color.toString().substring(0, 6) + "]";
+                    hue += 360 / colors;
+                }
+                out += c;
+            }
+            out = out.length() > Vars.maxTextLength ? args[0] : out;
+            Call.sendChatMessage(out);
         });
     }
 }
