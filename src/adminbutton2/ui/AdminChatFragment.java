@@ -75,6 +75,11 @@ public class AdminChatFragment extends ChatFragment {
                     message = formattedMessage;
                 }
             }
+            if (AdminVars.commands.runCommand(message)) {
+                clearChatInput();
+                history.insert(1, message);
+                return;
+            }
             if (AdminVars.commands.smt && !message.startsWith("/") && !message.isEmpty()) {
                 history.insert(1, message);
                 if (AdminVars.communication.selectedBuildingExists()) {
