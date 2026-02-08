@@ -242,7 +242,7 @@ public class AutoFill {
         return true;
     }
 
-    private Item getItemTurretItem(Building b) {
+    private Item getNeededTurretItem(Building b) {
         Item bestItem = null;
         float bestDamage = 0;
         for (ObjectMap.Entry<Item, BulletType> i : ((ItemTurret)b.block).ammoTypes) {
@@ -299,7 +299,7 @@ public class AutoFill {
         if (!unit.within(b, Vars.itemTransferRange)) return null;
         Item item = null;
         if (b.block instanceof ItemTurret) {
-            item = getItemTurretItem(b);
+            item = getNeededTurretItem(b);
         } else {
             item = getItem(b);
         }
