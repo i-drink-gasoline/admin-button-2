@@ -146,7 +146,7 @@ public class AdminChatFragment extends ChatFragment {
     public void addMessage(String message) {
         addMessageFinal(message);
         String secret = Secret.readSecretMessage(message);
-        if (!secret.isEmpty()) addMessageFinal(AdminVars.chatNotificationPrefix + secret);
+        if (!secret.isEmpty()) AdminVars.sendChatNotification(secret);
     }
 
     private void addMessageFinal(String message) {

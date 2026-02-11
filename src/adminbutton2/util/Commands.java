@@ -161,7 +161,7 @@ public class Commands {
                         break;
                     }
                 }
-                Vars.ui.chatfrag.addMessage(AdminVars.chatNotificationPrefix + "[stat]" + Core.bundle.format("adminbutton2.command.linknodes.new_links", newLinks));
+                AdminVars.sendChatNotification("[stat]" + Core.bundle.format("adminbutton2.command.linknodes.new_links", newLinks));
                 AdminVars.interaction.interacting = false;
             }, "[AB2] command linknodes");
             thread.setDaemon(true);

@@ -81,7 +81,7 @@ public class Communication {
     public void selectBuildingAndRun(Runnable runnable) {
         selectingBuilding = true;
         runOnSelect = runnable;
-        Vars.ui.chatfrag.addMessage(AdminVars.chatNotificationPrefix + "[scarlet]" + Core.bundle.get("adminbutton2.communication.selectBuilding"));
+        AdminVars.sendChatNotification("[scarlet]" + Core.bundle.get("adminbutton2.communication.selectBuilding"));
     }
 
     public byte[] deflate(byte[] bytes) {
@@ -148,7 +148,7 @@ public class Communication {
             if (msg.length() <= ((MessageBlock)selectedBuilding.block).maxTextLength) {
                 selectedBuilding.configure(msg);
             } else {
-                Vars.ui.chatfrag.addMessage(AdminVars.chatNotificationPrefix + "[scarlet]" + Core.bundle.get("adminbutton2.admindialog.message_above_limit"));
+                AdminVars.sendChatNotification("[scarlet]" + Core.bundle.get("adminbutton2.admindialog.message_above_limit"));
             }
         } else if (selectedBuilding.block instanceof LogicBlock) {
             if (!((LogicBlock)selectedBuilding.block).accessible()) return;
@@ -157,7 +157,7 @@ public class Communication {
             if (bytes.length - Integer.BYTES <= Short.MAX_VALUE / 2) {;
                 selectedBuilding.configure(bytes);
             } else {
-                Vars.ui.chatfrag.addMessage(AdminVars.chatNotificationPrefix + "[scarlet]" + Core.bundle.get("adminbutton2.admindialog.message_above_limit"));
+                AdminVars.sendChatNotification("[scarlet]" + Core.bundle.get("adminbutton2.admindialog.message_above_limit"));
             }
         } else if (selectedBuilding.block instanceof CanvasBlock) {
             if (deflated.length <= Byte.MAX_VALUE - 2 && deflated.length + 2 <= ((CanvasBlock.CanvasBuild)selectedBuilding).data.length) {
@@ -167,7 +167,7 @@ public class Communication {
                 System.arraycopy(deflated, 0, msg, 2, deflated.length);
                 selectedBuilding.configure(msg);
             } else {
-                Vars.ui.chatfrag.addMessage(AdminVars.chatNotificationPrefix + "[scarlet]" + Core.bundle.get("adminbutton2.admindialog.message_above_limit"));
+                AdminVars.sendChatNotification("[scarlet]" + Core.bundle.get("adminbutton2.admindialog.message_above_limit"));
             }
         }
     }
