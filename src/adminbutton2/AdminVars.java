@@ -41,6 +41,7 @@ import adminbutton2.util.AutoFill;
 import adminbutton2.util.BlockReplacer;
 import adminbutton2.util.Commands;
 import adminbutton2.util.Communication;
+import adminbutton2.util.GameNotifications;
 import adminbutton2.util.Interaction;
 import adminbutton2.util.KeyBindings;
 
@@ -71,6 +72,7 @@ public class AdminVars extends Mod {
     public static Interaction interaction;
     public static BlockReplacer blockReplacer;
     public static KeyBindings keys;
+    public static GameNotifications notifications;
 
     public static boolean controllerEnabled = false;
 
@@ -82,6 +84,7 @@ public class AdminVars extends Mod {
         interaction = new Interaction();
         blockReplacer = new BlockReplacer();
         keys = new KeyBindings();
+        notifications = new GameNotifications();
 
         panel = new AdminPanel();
         admin = new AdminDialog();
@@ -190,7 +193,15 @@ public class AdminVars extends Mod {
                 AdminVars.autofill.coreMinimumRequestAmount = v;
                 return "" + v;
             });
+            builder.pref(new CategorySetting("@adminbutton2.notifications"));
+            builder.checkPref("adminbutton2.notifications.show", true);
+            builder.checkPref("adminbutton2.notifications.only_pvp", true);
+            builder.checkPref("adminbutton2.notifications.ignore_player_team", true);
         });
+    }
+
+    public static void sendChatNotification(String message) {
+        Vars.ui.chatfrag.addMessage(AdminVars.chatNotificationPrefix + message);
     }
 
     private class CategorySetting extends SettingsMenuDialog.SettingsTable.Setting {
