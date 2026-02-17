@@ -96,7 +96,7 @@ public class AdminVars extends Mod {
         panelConfig = new PanelConfigDialog();
         autofillConfig = new AutoFillConfigDialog();
         chat = new ChatDialog();
-        console = new ConsoleDialog();
+        //console = new ConsoleDialog();
 
         blockReplacer.replaceBlocks();
         control.setController(control.controllers[0]);
