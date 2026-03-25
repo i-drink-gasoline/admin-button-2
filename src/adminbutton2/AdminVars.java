@@ -49,6 +49,8 @@ public class AdminVars extends Mod {
     private static final String admin_locale = "admin-button-2";
     public static final String chatNotificationPrefix = "[AB2] ";
 
+    public static mindustry.mod.Mods.LoadedMod loadedMod;
+
     public static String secretMessageFormat = Core.settings.getString("adminbutton2.secrets.format", "{}");
 
     public static AdminPanel panel;
@@ -78,6 +80,8 @@ public class AdminVars extends Mod {
 
     @Override
     public void init() {
+        loadedMod = Vars.mods.getMod("admin-button-2");
+
         commands = new Commands();
         autofill = new AutoFill();
         communication = new Communication();
