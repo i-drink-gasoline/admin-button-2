@@ -160,20 +160,31 @@ public class Communication {
                 AdminVars.sendChatNotification("[scarlet]" + Core.bundle.get("adminbutton2.admindialog.message_above_limit"));
             }
         } else if (selectedBuilding.block instanceof CanvasBlock) {
-            if (deflated.length <= Byte.MAX_VALUE - 2 && deflated.length + 2 <= ((CanvasBlock.CanvasBuild)selectedBuilding).data.length) {
-                byte[] msg = new byte[((CanvasBlock.CanvasBuild)selectedBuilding).data.length];
+            if (deflated.length > (int) Short.MAX_VALUE * 2 + 1 || deflated.length + 3 > ((CanvasBlock.CanvasBuild)selectedBuilding).data.length) {
+                AdminVars.sendChatNotification("[scarlet]" + Core.bundle.get("adminbutton2.admindialog.message_above_limit"));
+                return;
+            }
+            int canvasLength = ((CanvasBlock.CanvasBuild)selectedBuilding).data.length;
+            if (canvasLength <= Byte.MAX_VALUE * 2 - 1) {
+                byte[] msg = new byte[canvasLength];
                 msg[0] = canvasMagic;
-                msg[1] = (byte)deflated.length;
+                msg[1] = (byte) deflated.length;
                 System.arraycopy(deflated, 0, msg, 2, deflated.length);
                 selectedBuilding.configure(msg);
-            } else {
-                AdminVars.sendChatNotification("[scarlet]" + Core.bundle.get("adminbutton2.admindialog.message_above_limit"));
+            } else if (canvasLength <= Short.MAX_VALUE * 2 - 2){
+                byte[] msg = new byte[canvasLength];
+                msg[0] = canvasMagic;
+                short length = (short) deflated.length;
+                msg[1] = (byte) (length / 256);
+                msg[2] = (byte) (length % 256);
+                System.arraycopy(deflated, 0, msg, 3, deflated.length);
+                selectedBuilding.configure(msg);
             }
         }
     }
 
     public void readMessage(Building build, Player player) {
-        byte[] bytes;
+        byte[] bytes = null;
         if (build.block instanceof MessageBlock) {
             String message = (String)build.config();
             if (!message.startsWith(messageMagic)) return;
@@ -195,9 +206,19 @@ public class Communication {
         } else if (build.block instanceof CanvasBlock) {
             byte[] msg = (byte[])build.config();
             if (msg[0] != canvasMagic) return;
-            if (msg[1] < 0 || msg[1] > msg.length - 2) return;
-            bytes = new byte[msg[1]];
-            System.arraycopy(msg, 2, bytes, 0, msg[1]);
+            int canvasLength = msg.length;
+            if (canvasLength <= Byte.MAX_VALUE * 2 - 1) {
+                int length = msg[1] & 0xFF;
+                if (length < 0) return;
+                bytes = new byte[length];
+                System.arraycopy(msg, 2, bytes, 0, length);
+            } else if (canvasLength <= Short.MAX_VALUE * 2 - 2) {
+                int length = (msg[1] & 0xFF) * 256 + (msg[2] & 0xFF);
+                arc.util.Log.info("len: " + length);
+                if (length < 0) return;
+                bytes = new byte[length];
+                System.arraycopy(msg, 3, bytes, 0, length);
+            }
         } else {
             return;
         }
