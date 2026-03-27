@@ -70,7 +70,7 @@ public class AdminChatFragment extends ChatFragment {
                 } else {
                     formattedMessage = prefix + message + postfix;
                 }
-                if (formattedMessage.length() <= Vars.maxTextLength) {
+                if (formattedMessage.length() <= Vars.maxTextLength || AdminVars.commands.smt) {
                     chatfield.setText(formattedMessage);
                     message = formattedMessage;
                 }
