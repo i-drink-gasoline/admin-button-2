@@ -75,6 +75,7 @@ public class AdminVars extends Mod {
     public static GameNotifications notifications;
 
     public static boolean controllerEnabled = false;
+    public static boolean stopUnitMovement = false;
 
     @Override
     public void init() {

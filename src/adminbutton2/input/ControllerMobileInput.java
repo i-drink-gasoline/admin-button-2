@@ -9,7 +9,7 @@ import adminbutton2.AdminVars;
 public class ControllerMobileInput extends MobileInput {
     @Override
     protected void updateMovement(Unit unit) {
-        if (!AdminVars.controllerEnabled) {
+        if (!AdminVars.controllerEnabled && !AdminVars.stopUnitMovement) {
             super.updateMovement(unit);
         }
     }

@@ -59,7 +59,7 @@ public class ControllerDesktopInput extends DesktopInput {
 
     @Override
     protected void updateMovement(Unit unit) {
-        if (!AdminVars.controllerEnabled) {
+        if (!AdminVars.controllerEnabled && !AdminVars.stopUnitMovement) {
             super.updateMovement(unit);
         }
     }
