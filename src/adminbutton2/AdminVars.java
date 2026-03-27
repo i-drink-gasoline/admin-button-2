@@ -3,14 +3,12 @@ package adminbutton2;
 
 import arc.Core;
 import arc.Events;
-import arc.scene.Element;
 import arc.scene.ui.ButtonGroup;
 import arc.scene.ui.ScrollPane;
 import arc.scene.ui.TextButton;
 import arc.scene.ui.layout.Table;
 import arc.struct.ObjectMap;
 import arc.util.Log;
-import arc.util.Timer;
 import mindustry.Vars;
 import mindustry.ctype.UnlockableContent;
 import mindustry.game.EventType;
@@ -117,26 +115,7 @@ public class AdminVars extends Mod {
         }
         addLanguageOption();
         loadLanguage();
-        if (Vars.control.input instanceof MobileInput && Core.settings.getBool("adminbutton2.settings.pause_building_button", true)) Events.run(EventType.ClientLoadEvent.class, () -> Timer.schedule(() -> addPauseBuildingButton(), 4));
         addSettingsCategory();
-    }
-
-    private static void addPauseBuildingButton() {
-        try {
-            Table table = (Table) Vars.control.input.uiGroup.getChildren().get(0);
-            Element cancel = table.getChildren().get(0);
-            table.removeChild(cancel);
-            table.row();
-            table.button("@adminbutton2.pause_building", Icon.pause, Styles.clearTogglet, () -> Vars.control.input.isBuilding = !Vars.control.input.isBuilding).width(155f).height(50f).margin(12f).checked(b -> !Vars.control.input.isBuilding);
-            table.row();
-            table.add(cancel).width(155f).height(50f).margin(12f);
-
-            Table commandTable = (Table) Vars.control.input.uiGroup.getChildren().get(1);
-            commandTable.getChildren().get(2).remove();
-            commandTable.spacerY(() -> ((MobileInput)Vars.control.input).showCancel() ? 100f : 0f).row();
-        } catch (Exception e) {
-            Vars.ui.showException(e);
-        }
     }
 
     @SuppressWarnings("unchecked")
@@ -186,7 +165,6 @@ public class AdminVars extends Mod {
             builder.checkPref("adminbutton2.settings.override_input_handler", true, v -> Vars.ui.showInfo("@setting.macnotch.description"));
             builder.checkPref("adminbutton2.settings.override_chatfrag", true, v -> Vars.ui.showInfo("@setting.macnotch.description"));
             if (!Vars.android) builder.checkPref("adminbutton2.settings.block_replacer.enabled", false, v -> Vars.ui.showInfo("@setting.macnotch.description"));
-            if (Vars.mobile) builder.checkPref("adminbutton2.settings.pause_building_button", true, v -> Vars.ui.showInfo("@setting.macnotch.description"));
             builder.textPref("adminbutton2.commands.prefix", ".", v -> AdminVars.commands.handler.setPrefix(v));
             builder.sliderPref("adminbutton2.interaction.interaction_cooldown_milliseconds", 250, 0, 5000, 25, v -> {
                 AdminVars.interaction.interactionCooldown = (float)v / 1000;
