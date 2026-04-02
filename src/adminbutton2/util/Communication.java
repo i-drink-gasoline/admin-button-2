@@ -209,13 +209,13 @@ public class Communication {
             int canvasLength = msg.length;
             if (canvasLength <= Byte.MAX_VALUE * 2 - 1) {
                 int length = msg[1] & 0xFF;
-                if (length < 0) return;
+                if (length < 0 || length > msg.length - 2) return;
                 bytes = new byte[length];
                 System.arraycopy(msg, 2, bytes, 0, length);
             } else if (canvasLength <= Short.MAX_VALUE * 2 - 2) {
                 int length = (msg[1] & 0xFF) * 256 + (msg[2] & 0xFF);
                 arc.util.Log.info("len: " + length);
-                if (length < 0) return;
+                if (length < 0 || length > msg.length - 3) return;
                 bytes = new byte[length];
                 System.arraycopy(msg, 3, bytes, 0, length);
             }
