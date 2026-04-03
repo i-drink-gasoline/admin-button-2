@@ -76,7 +76,7 @@ public class ImageGeneratorDialog extends BaseDialog {
         cont.add(rightTable);
 
         rightTable.button("@adminbutton2.imagegenerator.selectimage", () -> {
-            new FileChooser("@open", file -> true, true, file -> {
+            Vars.platform.showFileChooser(true, "*", file -> {
                 Pixmap pixmap = null;
                 try {
                     pixmap = new Pixmap(file);
@@ -85,7 +85,7 @@ public class ImageGeneratorDialog extends BaseDialog {
                 }
                 if (pixmap == null) return;
                 setPixmap(pixmap);
-            }).show();
+            });
         }).width(200f).row();
 
         Label generatorButtonLabel = rightTable.button("", () -> {
