@@ -42,6 +42,7 @@ import adminbutton2.util.Communication;
 import adminbutton2.util.GameNotifications;
 import adminbutton2.util.Interaction;
 import adminbutton2.util.KeyBindings;
+import adminbutton2.util.MessageSender;
 
 public class AdminVars extends Mod {
     private static final String admin_locale = "admin-button-2";
@@ -73,6 +74,7 @@ public class AdminVars extends Mod {
     public static BlockReplacer blockReplacer;
     public static KeyBindings keys;
     public static GameNotifications notifications;
+    public static MessageSender messageSender;
 
     public static boolean controllerEnabled = false;
     public static boolean stopUnitMovement = false;
@@ -88,6 +90,7 @@ public class AdminVars extends Mod {
         blockReplacer = new BlockReplacer();
         keys = new KeyBindings();
         notifications = new GameNotifications();
+        messageSender = new MessageSender();
 
         panel = new AdminPanel();
         admin = new AdminDialog();

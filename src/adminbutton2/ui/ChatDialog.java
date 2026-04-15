@@ -9,6 +9,7 @@ import mindustry.gen.Icon;
 import mindustry.gen.Tex;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
+import arc.scene.ui.TextField;
 
 import adminbutton2.AdminVars;
 
@@ -57,7 +58,16 @@ public class ChatDialog extends BaseDialog {
                 t2.add().width(24f);
                 t2.field("", s -> Core.settings.put("adminbutton2.chat.messagePostfix", s)).growX().update(f -> f.setText(Core.settings.getString("adminbutton2.chat.messagePostfix", "")));
                 t2.row();
-
+            }).growX().row();
+            t.table(t2 -> {
+                String occasions[] = {"join", "win", "loss"};
+                for (String occasion : occasions) {
+                    TextField field = t2.field("", s -> Core.settings.put("adminbutton2.message_sender.on_" + occasion, s)).growX().get();
+                    field.update(() -> field.setText(Core.settings.getString("adminbutton2.message_sender.on_" + occasion, "")));
+                    field.setMaxLength(Vars.maxTextLength);
+                    field.setMessageText(Core.bundle.get("adminbutton2.message_sender.on_" + occasion));
+                    t2.row();
+                }
             }).growX();
         });
     }
