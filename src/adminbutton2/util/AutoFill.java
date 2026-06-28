@@ -41,6 +41,7 @@ public class AutoFill {
     public boolean fillOnlySelectedBuildings = false;
     public int coreMinimumRequestAmount = Core.settings.getInt("adminbutton2.autofill.core_minimum_request_amount", 30);
     public boolean[] fillMap;
+    public boolean[][] fillWithMap;
     static Seq<Building> selected = new Seq<>();
     public Color colorSelected = Pal.accent.cpy().a(0.75f).premultiplyAlpha(), colorSelectedNear = Pal.accent.cpy().a(0.75f), colorNear = Pal.plastanium.cpy().a(0.75f), colorCore = Pal.reactorPurple2.cpy().a(0.75f), colorStorage = Pal.techBlue.cpy().a(0.75f);
     public Color selectionColor = Pal.reactorPurple2.cpy(), selectionBackColor = selectionColor.cpy().mul(0.75f);
@@ -75,9 +76,14 @@ public class AutoFill {
 
     public AutoFill() {
         Seq<Block> blocks = Vars.content.blocks();
+        Seq<Item> items = Vars.content.items();
         fillMap = new boolean[blocks.size];
+        fillWithMap = new boolean[blocks.size][items.size];
         for (int i = 0; i < blocks.size; i++) {
             fillMap[i] = Core.settings.getBool("adminbutton2.autofill.fill." + blocks.get(i).name, true);
+            for (int j = 0; j < items.size; j++) {
+                fillWithMap[i][j] = Core.settings.getBool("adminbutton2.autofill.fill." + blocks.get(i).name + ".with." + items.get(j).name, true);
+            }
         }
         try {
             drawSelection = mindustry.input.InputHandler.class.getDeclaredMethod("drawSelection", int.class, int.class, int.class, int.class, int.class, Color.class, Color.class, boolean.class);
@@ -227,6 +233,7 @@ public class AutoFill {
     }
 
     private boolean itemTransferPossible(Building b, Item i) {
+        if (fillWithMap[b.block.id][i.id] == false) return false;
         for (Consume c2 : b.block.consumers) {
             if (c2 instanceof ConsumeItemExplode) {
                 if (((ConsumeItemExplode)c2).filter.get(i)) return false;
