@@ -33,6 +33,7 @@ import adminbutton2.AdminVars;
 public class GameNotifications {
     private Interval updateInterval = new Interval();
     private ObjectMap<Team, Data> teams = new ObjectMap<>();
+    private Seq<UnlockableContent> unlockedContent = new Seq<>();
 
     static {
         Events.run(EventType.WorldLoadEvent.class, () -> {
@@ -114,12 +115,16 @@ public class GameNotifications {
         return stuff;
     }
 
-    public void sendStartedProducingMessage(Team team, UnlockableContent content) {
+    public void sendStartedProducingMessage(Team team, Seq<UnlockableContent> content) {
         if (!Core.settings.getBool("adminbutton2.notifications.show", true)) return;
         if (!Vars.state.rules.pvp && Core.settings.getBool("adminbutton2.notifications.only_pvp", true)) return;
         if (team == Vars.player.team() && Core.settings.getBool("adminbutton2.notifications.ignore_player_team", true)) return;
-        Color color = (content instanceof Item) ? ((Item)content).color : (content instanceof Liquid) ? ((Liquid)content).color : Color.white;
-        AdminVars.sendChatNotification(Core.bundle.format("adminbutton2.notifications.started_producing", team.coloredName(), (content.hasEmoji() ? content.emoji() : "") + "[#" + color + "]" + content.localizedName + "[]"));
+        String contentString = "";
+        for (UnlockableContent c : content) {
+            Color color = (c instanceof Item) ? ((Item)c).color : (c instanceof Liquid) ? ((Liquid)c).color : Color.white;
+            contentString += (c.hasEmoji() ? c.emoji() : "") + "[#" + color + "]" + c.localizedName + "[] ";
+        }
+        AdminVars.sendChatNotification(Core.bundle.format("adminbutton2.notifications.started_producing", team.coloredName(), contentString));
     }
 
     private class StuffProduced {
@@ -143,31 +148,35 @@ public class GameNotifications {
         }
 
         public void buildPlaced(Building build) {
+            unlockedContent.clear();
             StuffProduced stuff = getStuffProduced(build);
             for (Item item : stuff.items) {
                 if (itemsUnlocked[item.id] == false) {
                     itemsUnlocked[item.id] = true;
-                    if (initialized) sendStartedProducingMessage(team, item);
+                    if (initialized) unlockedContent.add(item);
                 }
             }
             for (Liquid liquid : stuff.liquids) {
                 if (liquidsUnlocked[liquid.id] == false) {
                     liquidsUnlocked[liquid.id] = true;
-                    if (initialized) sendStartedProducingMessage(team, liquid);
+                    if (initialized) unlockedContent.add(liquid);
                 }
             }
+            if (!unlockedContent.isEmpty()) sendStartedProducingMessage(team, unlockedContent);
         }
 
         public void update() {
+            unlockedContent.clear();
             if (Groups.unit.size() != 0) {
                 team.data().units.each(unit -> {
                     if (unit.spawnedByCore) return;
                     if (unitsUnlocked[unit.type.id] == false) {
                         unitsUnlocked[unit.type.id] = true;
-                        if (initializedUnits) sendStartedProducingMessage(team, unit.type);
+                        if (initializedUnits) unlockedContent.add(unit.type);
                     }
                 });
                 initializedUnits = true;
+                if (!unlockedContent.isEmpty()) sendStartedProducingMessage(team, unlockedContent);
             }
         }
     }
