@@ -43,6 +43,7 @@ import adminbutton2.util.GameNotifications;
 import adminbutton2.util.Interaction;
 import adminbutton2.util.KeyBindings;
 import adminbutton2.util.MessageSender;
+import adminbutton2.util.UpdateNotification;
 
 public class AdminVars extends Mod {
     private static final String admin_locale = "admin-button-2";
@@ -75,6 +76,7 @@ public class AdminVars extends Mod {
     public static KeyBindings keys;
     public static GameNotifications notifications;
     public static MessageSender messageSender;
+    public static UpdateNotification update;
 
     public static boolean controllerEnabled = false;
     public static boolean stopUnitMovement = false;
@@ -91,6 +93,7 @@ public class AdminVars extends Mod {
         keys = new KeyBindings();
         notifications = new GameNotifications();
         messageSender = new MessageSender();
+        update = new UpdateNotification();
 
         panel = new AdminPanel();
         admin = new AdminDialog();
@@ -169,6 +172,7 @@ public class AdminVars extends Mod {
             builder.checkPref("adminbutton2.settings.override_input_handler", true, v -> Vars.ui.showInfo("@setting.macnotch.description"));
             builder.checkPref("adminbutton2.settings.override_chatfrag", true, v -> Vars.ui.showInfo("@setting.macnotch.description"));
             if (!Vars.android) builder.checkPref("adminbutton2.settings.block_replacer.enabled", false, v -> Vars.ui.showInfo("@setting.macnotch.description"));
+            builder.checkPref("adminbutton2.imagegenerator.check_for_updates", true);
             builder.textPref("adminbutton2.commands.prefix", ".", v -> AdminVars.commands.handler.setPrefix(v));
             builder.sliderPref("adminbutton2.interaction.interaction_cooldown_milliseconds", 250, 0, 5000, 25, v -> {
                 AdminVars.interaction.interactionCooldown = (float)v / 1000;
