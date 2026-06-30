@@ -53,6 +53,7 @@ public class AutoFill {
     int selectX = -1, selectY = -1;
     Method drawSelection;
     boolean selectionExists = false;
+    public boolean interactWithStorageBuildings = Core.settings.getBool("adminbutton2.autofill.interact_with_storage_buildings", true);
 
     static {
         Events.on(EventType.TapEvent.class, e -> {
@@ -145,9 +146,11 @@ public class AutoFill {
             Draw.color(colorCore);
             Lines.square(core.x, core.y, core.block.size * Vars.tilesize / 1.5f, draw_rot);
         }
-        Draw.color(colorStorage);
-        getStorageBuildings();
-        storageBuildings.each(b -> Lines.square(b.x, b.y, b.block.size * Vars.tilesize / 1.5f, draw_rot));
+        if (interactWithStorageBuildings) {
+            Draw.color(colorStorage);
+            getStorageBuildings();
+            storageBuildings.each(b -> Lines.square(b.x, b.y, b.block.size * Vars.tilesize / 1.5f, draw_rot));
+        }
         Draw.reset();
     }
 
@@ -356,6 +359,7 @@ public class AutoFill {
 
     private void getStorageBuildings() {
         storageBuildings.clear();
+        if (!interactWithStorageBuildings) return;
         Vars.indexer.eachBlock(unit, Vars.itemTransferRange, b -> {
             if (b.block instanceof CoreBlock) return false;
             return b.block instanceof StorageBlock && ((StorageBlock.StorageBuild)b).linkedCore == null;

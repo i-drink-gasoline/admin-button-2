@@ -57,6 +57,9 @@ public class AutoFillConfigDialog extends BaseDialog {
             t.check("@adminbutton2.autofill.enabled", b -> AdminVars.autofill.enabled = !AdminVars.autofill.enabled).checked(b -> AdminVars.autofill.enabled).row();
             t.check("@adminbutton2.autofill.select_buildings", b -> AdminVars.autofill.selectBuildings = !AdminVars.autofill.selectBuildings).checked(b -> AdminVars.autofill.selectBuildings).row();
             t.check("@adminbutton2.autofill.fill_only_selected_buildings", b -> AdminVars.autofill.fillOnlySelectedBuildings = !AdminVars.autofill.fillOnlySelectedBuildings).checked(b -> AdminVars.autofill.fillOnlySelectedBuildings).row();
+            t.check("@adminbutton2.autofill.interact_with_storage_buildings", b -> {
+                Core.settings.put("adminbutton2.autofill.interact_with_storage_buildings", AdminVars.autofill.interactWithStorageBuildings = !AdminVars.autofill.interactWithStorageBuildings);
+            }).checked(b -> AdminVars.autofill.interactWithStorageBuildings).row();
             t.pane(blocksTable).grow();
         });
         itemsDialog.addCloseButton();
