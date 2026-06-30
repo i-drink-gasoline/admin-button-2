@@ -90,7 +90,7 @@ public class AutomaticMovementController extends Controller {
         table.check("@" + name() + ".mine", !mine, t -> {
             mine = t;
             previousUnit = null;
-        }).row();
+        }).padBottom(10f).row();
         table.table(t -> {
             int buttons = 0;
             for (Item i : Vars.content.items()) {
