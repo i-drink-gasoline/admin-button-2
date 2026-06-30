@@ -43,6 +43,7 @@ import adminbutton2.util.GameNotifications;
 import adminbutton2.util.Interaction;
 import adminbutton2.util.KeyBindings;
 import adminbutton2.util.MessageSender;
+import adminbutton2.util.MineClosestOre;
 import adminbutton2.util.UpdateNotification;
 
 public class AdminVars extends Mod {
@@ -77,6 +78,7 @@ public class AdminVars extends Mod {
     public static GameNotifications notifications;
     public static MessageSender messageSender;
     public static UpdateNotification update;
+    public static MineClosestOre mineClosestOre;
 
     public static boolean controllerEnabled = false;
     public static boolean stopUnitMovement = false;
@@ -94,6 +96,7 @@ public class AdminVars extends Mod {
         notifications = new GameNotifications();
         messageSender = new MessageSender();
         update = new UpdateNotification();
+        mineClosestOre = new MineClosestOre();
 
         panel = new AdminPanel();
         admin = new AdminDialog();
