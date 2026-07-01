@@ -12,6 +12,7 @@ import arc.scene.ui.Label;
 import arc.scene.ui.Slider;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
+import arc.util.Align;
 import arc.util.Strings;
 import arc.util.Timer;
 import mindustry.Vars;
@@ -50,17 +51,21 @@ public class AutoFillConfigDialog extends BaseDialog {
             rebuildBlocksTable();
             rebuildItemsTable();
         });
-        rebuildBlocksTable();
-        rebuildItemsTable();
-        cont.table(t -> {
-            t.defaults().left();
-            t.check("@adminbutton2.autofill.enabled", b -> AdminVars.autofill.enabled = !AdminVars.autofill.enabled).checked(b -> AdminVars.autofill.enabled).row();
-            t.check("@adminbutton2.autofill.select_buildings", b -> AdminVars.autofill.selectBuildings = !AdminVars.autofill.selectBuildings).checked(b -> AdminVars.autofill.selectBuildings).row();
-            t.check("@adminbutton2.autofill.fill_only_selected_buildings", b -> AdminVars.autofill.fillOnlySelectedBuildings = !AdminVars.autofill.fillOnlySelectedBuildings).checked(b -> AdminVars.autofill.fillOnlySelectedBuildings).row();
-            t.check("@adminbutton2.autofill.interact_with_storage_buildings", b -> {
-                Core.settings.put("adminbutton2.autofill.interact_with_storage_buildings", AdminVars.autofill.interactWithStorageBuildings = !AdminVars.autofill.interactWithStorageBuildings);
-            }).checked(b -> AdminVars.autofill.interactWithStorageBuildings).row();
-            t.pane(blocksTable).grow();
+        cont.pane(t -> {
+            t.labelWrap(Core.bundle.format("adminbutton2.autofill.description", AdminVars.autofill.colorSelected.a(1f), AdminVars.autofill.colorSelectedNear.a(1f), AdminVars.autofill.colorNear.a(1f), AdminVars.autofill.colorCore.a(1f), AdminVars.autofill.colorStorage.a(1f))).growX().get().setAlignment(Align.center, Align.center);
+            t.row();
+            rebuildBlocksTable();
+            rebuildItemsTable();
+            t.table(t2 -> {
+                t2.defaults().left();
+                t2.check("@adminbutton2.autofill.enabled", b -> AdminVars.autofill.enabled = !AdminVars.autofill.enabled).checked(b -> AdminVars.autofill.enabled).row();
+                t2.check("@adminbutton2.autofill.select_buildings", b -> AdminVars.autofill.selectBuildings = !AdminVars.autofill.selectBuildings).checked(b -> AdminVars.autofill.selectBuildings).row();
+                t2.check("@adminbutton2.autofill.fill_only_selected_buildings", b -> AdminVars.autofill.fillOnlySelectedBuildings = !AdminVars.autofill.fillOnlySelectedBuildings).checked(b -> AdminVars.autofill.fillOnlySelectedBuildings).row();
+                t2.check("@adminbutton2.autofill.interact_with_storage_buildings", b -> {
+                    Core.settings.put("adminbutton2.autofill.interact_with_storage_buildings", AdminVars.autofill.interactWithStorageBuildings = !AdminVars.autofill.interactWithStorageBuildings);
+                }).checked(b -> AdminVars.autofill.interactWithStorageBuildings).row();
+                t2.add(blocksTable).center();
+            });
         });
         itemsDialog.addCloseButton();
         selectedBlockImage = itemsDialog.cont.image().size((Vars.iconMed + 14f) * 4).get();
