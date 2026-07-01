@@ -60,6 +60,7 @@ public class AdminPanel {
         addButton("@adminbutton2.autofill.select_buildings", Icon.download, () -> AdminVars.autofill.selectBuildings = !AdminVars.autofill.selectBuildings, b -> AdminVars.autofill.selectBuildings);
         addButton("@adminbutton2.autofill.fill_only_selected_buildings", Icon.commandRally, () -> AdminVars.autofill.fillOnlySelectedBuildings = !AdminVars.autofill.fillOnlySelectedBuildings, b -> AdminVars.autofill.fillOnlySelectedBuildings);
         addButton("@adminbutton2.input.stop_unit_movement", Icon.lock, () -> AdminVars.stopUnitMovement = !AdminVars.stopUnitMovement, b -> AdminVars.stopUnitMovement);
+        addButton("@keybind.adminbutton2.mine_closest_ore.name", Icon.production, () -> AdminVars.mineClosestOre.tryMine());
     }
 
     private void setTablePosition() {
