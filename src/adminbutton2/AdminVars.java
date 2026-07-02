@@ -28,7 +28,6 @@ import adminbutton2.ui.AdminChatFragment;
 import adminbutton2.ui.AdminDialog;
 import adminbutton2.ui.AutoFillConfigDialog;
 import adminbutton2.ui.ChatDialog;
-import adminbutton2.ui.ConsoleDialog;
 import adminbutton2.ui.ControllerDialog;
 import adminbutton2.ui.ImageGeneratorDialog;
 import adminbutton2.ui.MessageList;
@@ -65,7 +64,6 @@ public class AdminVars extends Mod {
     public static PanelConfigDialog panelConfig;
     public static AutoFillConfigDialog autofillConfig;
     public static ChatDialog chat;
-    public static ConsoleDialog console;
 
     public static Controller controller;
 
@@ -108,7 +106,6 @@ public class AdminVars extends Mod {
         panelConfig = new PanelConfigDialog();
         autofillConfig = new AutoFillConfigDialog();
         chat = new ChatDialog();
-        //console = new ConsoleDialog();
 
         blockReplacer.replaceBlocks();
         control.setController(control.controllers[0]);
