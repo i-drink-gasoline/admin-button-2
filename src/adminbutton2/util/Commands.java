@@ -9,6 +9,7 @@ import arc.math.geom.Point2;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.CommandHandler;
+import arc.util.Strings;
 import mindustry.Vars;
 import mindustry.game.Team;
 import mindustry.gen.Building;
@@ -93,7 +94,7 @@ public class Commands {
 
         handler.register("smt", "adminbutton2.command.smt.description", args -> {
             smt = !smt;
-            Vars.ui.chatfrag.addMessage("" + smt);
+            Vars.ui.chatfrag.addMessage(Strings.stripColors(smt ? Core.bundle.get("mod.enabled") : Core.bundle.get("mod.disabled")));
         });
 
         handler.register("linknodes", "adminbutton2.command.linknodes.description", args -> {
