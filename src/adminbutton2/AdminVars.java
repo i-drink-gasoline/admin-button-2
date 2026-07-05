@@ -33,6 +33,7 @@ import adminbutton2.ui.ImageGeneratorDialog;
 import adminbutton2.ui.MessageList;
 import adminbutton2.ui.PanelConfigDialog;
 import adminbutton2.ui.SecretsDialog;
+import adminbutton2.ui.TurretRangeDialog;
 import adminbutton2.ui.WavesDialog;
 import adminbutton2.util.AutoFill;
 import adminbutton2.util.BlockReplacer;
@@ -43,6 +44,7 @@ import adminbutton2.util.Interaction;
 import adminbutton2.util.KeyBindings;
 import adminbutton2.util.MessageSender;
 import adminbutton2.util.MineClosestOre;
+import adminbutton2.util.TurretRange;
 import adminbutton2.util.UpdateNotification;
 
 public class AdminVars extends Mod {
@@ -64,6 +66,7 @@ public class AdminVars extends Mod {
     public static PanelConfigDialog panelConfig;
     public static AutoFillConfigDialog autofillConfig;
     public static ChatDialog chat;
+    public static TurretRangeDialog turretRangeDialog;
 
     public static Controller controller;
 
@@ -77,6 +80,7 @@ public class AdminVars extends Mod {
     public static MessageSender messageSender;
     public static UpdateNotification update;
     public static MineClosestOre mineClosestOre;
+    public static TurretRange turretRange;
 
     public static boolean controllerEnabled = false;
     public static boolean stopUnitMovement = false;
@@ -95,6 +99,7 @@ public class AdminVars extends Mod {
         messageSender = new MessageSender();
         update = new UpdateNotification();
         mineClosestOre = new MineClosestOre();
+        turretRange = new TurretRange();
 
         panel = new AdminPanel();
         admin = new AdminDialog();
@@ -106,6 +111,7 @@ public class AdminVars extends Mod {
         panelConfig = new PanelConfigDialog();
         autofillConfig = new AutoFillConfigDialog();
         chat = new ChatDialog();
+        turretRangeDialog = new TurretRangeDialog();
 
         blockReplacer.replaceBlocks();
         control.setController(control.controllers[0]);

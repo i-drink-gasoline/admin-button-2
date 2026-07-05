@@ -53,6 +53,7 @@ public class AdminPanel {
         addButton("@rules.waves", Icon.waves, () -> AdminVars.waves.show());
         addButton("@adminbutton2.panelconfig.title", Icon.wrench, () -> AdminVars.panelConfig.show());
         addButton("@adminbutton2.autofill_config.title", Icon.box, () -> AdminVars.autofillConfig.show());
+        addButton("@adminbutton2.turret_range.title", Icon.turret, () -> AdminVars.turretRangeDialog.show());
 
         addButton("@adminbutton2.controller.enable_controller", Icon.logic, () -> AdminVars.controllerEnabled = !AdminVars.controllerEnabled, b -> AdminVars.controllerEnabled);
         addButton("@adminbutton2.autofill.enabled", Icon.box, () -> AdminVars.autofill.enabled = !AdminVars.autofill.enabled, b -> AdminVars.autofill.enabled);
@@ -60,6 +61,21 @@ public class AdminPanel {
         addButton("@adminbutton2.autofill.fill_only_selected_buildings", Icon.commandRally, () -> AdminVars.autofill.fillOnlySelectedBuildings = !AdminVars.autofill.fillOnlySelectedBuildings, b -> AdminVars.autofill.fillOnlySelectedBuildings);
         addButton("@adminbutton2.input.stop_unit_movement", Icon.lock, () -> AdminVars.stopUnitMovement = !AdminVars.stopUnitMovement, b -> AdminVars.stopUnitMovement);
         addButton("@keybind.adminbutton2.mine_closest_ore.name", Icon.production, () -> AdminVars.mineClosestOre.tryMine());
+        addButton("@adminbutton2.turret_range.draw_air", Icon.upOpen, () -> {
+            boolean value = !AdminVars.turretRange.drawAir;
+            AdminVars.turretRange.drawAir = value;
+            Core.settings.put("adminbutton2.turret_range.draw_air", value);
+        }, b -> AdminVars.turretRange.drawAir);
+        addButton("@adminbutton2.turret_range.draw_ground", Icon.downOpen, () -> {
+            boolean value = !AdminVars.turretRange.drawGround;
+            AdminVars.turretRange.drawGround = value;
+            Core.settings.put("adminbutton2.turret_range.draw_ground", value);
+        }, b -> AdminVars.turretRange.drawGround);
+        addButton("@adminbutton2.turret_range.draw_player_team", Icon.players, () -> {
+            boolean value = !AdminVars.turretRange.drawPlayerTeam;
+            AdminVars.turretRange.drawPlayerTeam = value;
+            Core.settings.put("adminbutton2.turret_range.draw_player_team", value);
+        }, b -> AdminVars.turretRange.drawPlayerTeam);
     }
 
     private void setTablePosition() {
