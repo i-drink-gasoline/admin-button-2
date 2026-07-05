@@ -52,7 +52,7 @@ public class AutoFillConfigDialog extends BaseDialog {
             rebuildItemsTable();
         });
         cont.pane(t -> {
-            t.labelWrap(Core.bundle.format("adminbutton2.autofill.description", AdminVars.autofill.colorSelected.a(1f), AdminVars.autofill.colorSelectedNear.a(1f), AdminVars.autofill.colorNear.a(1f), AdminVars.autofill.colorCore.a(1f), AdminVars.autofill.colorStorage.a(1f))).growX().get().setAlignment(Align.center, Align.center);
+            t.labelWrap(Core.bundle.format("adminbutton2.autofill.description", AdminVars.autofill.colorSelected.cpy().a(1f), AdminVars.autofill.colorSelectedNear.cpy().a(1f), AdminVars.autofill.colorNear.cpy().a(1f), AdminVars.autofill.colorCore.cpy().a(1f), AdminVars.autofill.colorStorage.cpy().a(1f))).growX().get().setAlignment(Align.center, Align.center);
             t.row();
             rebuildBlocksTable();
             rebuildItemsTable();
