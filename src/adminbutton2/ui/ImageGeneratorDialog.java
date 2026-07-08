@@ -268,11 +268,11 @@ public class ImageGeneratorDialog extends BaseDialog {
                 code += String.format("drawflush %s1\n", LogicBlock.getLinkName(display));
                 processors.add(code);
             }
-            putProcessors(tiles, processors);
+            putProcessors(tiles, processors, LogicBlock.getLinkName(display) + "1");
             scaledPixmap.dispose();
         }
 
-        private void putProcessors(Seq<Schematic.Stile> tiles, Seq<String> processors) {
+        private void putProcessors(Seq<Schematic.Stile> tiles, Seq<String> processors, String linkName) {
             Point2 pos = new Point2(1, 0);
             Point2 dir = new Point2(1, 0);
             Point2 displayPos = new Point2(tiles.first().x, tiles.first().y);
@@ -281,7 +281,7 @@ public class ImageGeneratorDialog extends BaseDialog {
             int rotations = 0;
             for (String code : processors) {
                 Seq<LogicBlock.LogicLink> links = new Seq<>();
-                links.add(new LogicBlock.LogicLink(displayPos.x - pos.x, displayPos.y - pos.y, "", true));
+                links.add(new LogicBlock.LogicLink(displayPos.x - pos.x, displayPos.y - pos.y, linkName, true));
                 tiles.add(new Schematic.Stile(processor, pos.x, pos.y, LogicBlock.compress(code, links), (byte)0));
                 line += 1;
                 if (line == lineLength) {
