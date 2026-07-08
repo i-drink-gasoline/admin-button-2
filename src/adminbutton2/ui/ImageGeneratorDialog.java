@@ -26,7 +26,7 @@ import mindustry.type.Item;
 import mindustry.type.Liquid;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
-import mindustry.ui.dialogs.FileChooser;
+import mindustry.ui.FileChooser;
 import mindustry.world.Block;
 import mindustry.world.blocks.logic.CanvasBlock;
 import mindustry.world.blocks.logic.LogicBlock;
@@ -76,7 +76,7 @@ public class ImageGeneratorDialog extends BaseDialog {
         cont.add(rightTable);
 
         rightTable.button("@adminbutton2.imagegenerator.selectimage", () -> {
-            Vars.platform.showFileChooser(true, "*", file -> {
+            FileChooser.open("*").submit(file -> {
                 Pixmap pixmap = null;
                 try {
                     pixmap = new Pixmap(file);
@@ -214,7 +214,7 @@ public class ImageGeneratorDialog extends BaseDialog {
                 }
             }
             Color c = new Color();
-            colorMap.keys().toArray().each(key -> {
+            colorMap.keys().toSeq().each(key -> {
                 colorSet = false;
                 IntSeq positions = colorMap.get(key);
                 while (!positions.isEmpty()) {
